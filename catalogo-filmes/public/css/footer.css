@@ -1,0 +1,603 @@
+/* Header Styles */
+.header-bg {
+    background-color: #212529;
+}
+
+.navbar-brand-bg {
+    background-color: #007cba;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #007cba;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #007cba;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #007cba;
+}
+
+.user-placeholder {
+    width: 40px;
+    height: 40px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ddd;
+}
+
+.contact-info .text-primary {
+    color: #007cba !important;
+}
+
+.contact-info p {
+    color: #fff;
+    margin: 0;
+}
+
+.user-info a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.user-info a:hover {
+    color: #007cba;
+}
+
+.dropdown-menu {
+    background-color: #212529;
+    border: none;
+}
+
+.dropdown-item {
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #007cba;
+    color: #fff;
+}
+
+/* Responsive header adjustments */
+@media (max-width: 991.98px) {
+    .contact-info {
+        display: none !important;
+    }
+    
+    .navbar-brand h1 {
+        font-size: 1.5rem;
+    }
+    
+    .user-info {
+        padding: 10px 0;
+    }
+}
+
+/* Main Page Styles */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('https://images.unsplash.com/photo-1489599651688-8e0b0e2be2b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    min-height: 400px;
+    color: white;
+}
+
+.section-title {
+    color: #007cba;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.feature-item {
+    background: linear-gradient(45deg, #007cba, #005a8a);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+}
+
+.stats-section {
+    background-color: #212529;
+    color: white;
+}
+
+.stats-icon {
+    width: 80px;
+    height: 80px;
+    background: #111111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #6c757d;
+    margin: 0;
+}
+
+.director-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.director-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.director-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #007cba;
+}
+
+.movie-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.movie-poster {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.movie-rating {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.movie-genre-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #007cba;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0, 124, 186, 0.3);
+    z-index: 2;
+}
+
+.movie-genre-tag-inline {
+    background: #007cba;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 124, 186, 0.3);
+    flex-shrink: 0;
+}
+
+.admin-controls {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+.admin-controls .btn {
+    margin: 3px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+.admin-controls .section-title {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.genre-section {
+    margin-bottom: 50px;
+}
+
+.genre-title {
+    color: #212529;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.genre-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #007cba;
+}
+
+.animate-up-down {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.wow {
+    visibility: hidden;
+}
+
+.wow.animated {
+    visibility: visible;
+}
+
+/* Genre Card Styles */
+.genre-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    padding: 25px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.genre-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.genre-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(45deg, #007cba, #005a8a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.genre-card:hover .genre-icon {
+    transform: scale(1.1);
+}
+
+.genre-content {
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.genre-title {
+    color: #212529;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.genre-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.genre-stats {
+    margin-bottom: 20px;
+}
+
+.genre-stats .badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+}
+
+.genre-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: auto;
+}
+
+.genre-actions .btn {
+    flex: 1;
+    max-width: 100px;
+}
+
+/* Genre specific colors */
+.genre-card[data-genre="Ação"] .genre-icon {
+    background: linear-gradient(45deg, #dc3545, #b02a37);
+}
+
+.genre-card[data-genre="Drama"] .genre-icon {
+    background: linear-gradient(45deg, #6f42c1, #563d7c);
+}
+
+.genre-card[data-genre="Comédia"] .genre-icon {
+    background: linear-gradient(45deg, #ffc107, #e0a800);
+}
+
+.genre-card[data-genre="Terror"] .genre-icon {
+    background: linear-gradient(45deg, #6c757d, #5a6268);
+}
+
+.genre-card[data-genre="Romance"] .genre-icon {
+    background: linear-gradient(45deg, #e83e8c, #d91a72);
+}
+
+.genre-card[data-genre="Ficção Científica"] .genre-icon {
+    background: linear-gradient(45deg, #20c997, #1aa179);
+}
+
+.genre-card[data-genre="Documentário"] .genre-icon {
+    background: linear-gradient(45deg, #fd7e14, #e25d00);
+}
+
+.genre-card[data-genre="Aventura"] .genre-icon {
+    background: linear-gradient(45deg, #198754, #146c43);
+}
+
+.genre-card[data-genre="Animação"] .genre-icon {
+    background: linear-gradient(45deg, #d63384, #b02a5b);
+}
+
+.genre-card[data-genre="Suspense"] .genre-icon {
+    background: linear-gradient(45deg, #495057, #343a40);
+}
+
+.genre-card[data-genre="Musical"] .genre-icon {
+    background: linear-gradient(45deg, #0dcaf0, #0aa1c7);
+}
+
+.genre-card[data-genre="Fantasia"] .genre-icon {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+}
+
+.genre-card[data-genre="Guerra"] .genre-icon {
+    background: linear-gradient(45deg, #7c4dff, #6a1b9a);
+}
+
+.genre-card[data-genre="Western"] .genre-icon {
+    background: linear-gradient(45deg, #8d6e63, #6d4c41);
+}
+
+.genre-card[data-genre="Policial"] .genre-icon {
+    background: linear-gradient(45deg, #37474f, #263238);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 300px;
+    }
+    
+    .genre-title {
+        font-size: 1.5rem;
+    }
+    
+    .director-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .movie-poster {
+        height: 250px;
+    }
+    
+    .genre-card {
+        padding: 20px;
+    }
+    
+    .genre-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .genre-description {
+        font-size: 0.85rem;
+    }
+    
+    .genre-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .genre-actions .btn {
+        max-width: none;
+    }
+}
+
+/* Footer Styles */
+.footer-bg {
+    background-color: #212529;
+}
+
+.footer-text {
+    color: #6c757d;
+}
+
+.footer-title {
+    color: #fff;
+}
+
+.footer-primary {
+    color: #007cba;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    text-decoration: none;
+    background-color: #212529;
+    color: white;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.back-to-top:hover {
+    background-color: #007cba;
+    color: white;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #007cba;
+    border-color: #007cba;
+}
+
+.footer-text a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-text a:hover {
+    color: #007cba !important;
+}
+
+/* Additional Footer Animations */
+.footer-bg .wow {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Newsletter form styling */
+.newsletter-form .input-group {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-form .form-control {
+    border-right: none;
+}
+
+.newsletter-form .form-control:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 0.2rem rgba(0, 124, 186, 0.25);
+}
+
+.newsletter-form .btn-primary {
+    background-color: #007cba;
+    border-color: #007cba;
+}
+
+.newsletter-form .btn-primary:hover {
+    background-color: #005a8a;
+    border-color: #005a8a;
+}
+
+/* Social media buttons */
+.social-links .btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-links .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-bg .col-lg-4 {
+        margin-bottom: 2rem;
+    }
+    
+    .back-to-top {
+        bottom: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .newsletter-form .input-group {
+        flex-direction: column;
+    }
+    
+    .newsletter-form .form-control {
+        border-radius: 0.375rem;
+        margin-bottom: 10px;
+    }
+    
+    .newsletter-form .btn {
+        border-radius: 0.375rem;
+    }
+} 

@@ -1,0 +1,72 @@
+/* Estilos globais para o layout */
+
+/* Header Styles */
+.header-bg {
+  background: #111111;
+}
+
+.navbar-brand-bg {
+  background: #000000;
+}
+
+/* Footer Styles */
+.footer-bg {
+  background: #111111;
+}
+
+.footer-text {
+  color: #999999;
+}
+
+.footer-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.footer-primary {
+  color: #007bff;
+}
+
+.social-links .btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  display: none;
+  right: 30px;
+  bottom: 30px;
+  z-index: 99;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}
+
+/* Hover Effects */
+.hover-card {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container-fluid.px-5 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .footer-bg.px-5 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
