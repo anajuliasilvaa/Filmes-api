@@ -43,13 +43,24 @@ class ProfileView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class UserListView(generics.ListCreateAPIView): # Alterado para ListCreate (opcional)
-    queryset = User.objects.all().select_related('profile') # Adicionado select_related para otimização
-    serializer_class = UserSerializer
-
-class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView): # NOVA CLASSE CONSOLIDADA
+class UserListView(generics.ListCreateAPIView):
+    """
+    Lista e cria usuários.
+    GET: Apenas administradores podem listar usuários
+    POST: Apenas administradores podem criar usuários (registro público usa RegisterView)
+    """
     queryset = User.objects.all().select_related('profile')
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUserGroup]
+
+class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Visualiza, atualiza e deleta usuários específicos.
+    Apenas administradores podem acessar.
+    """
+    queryset = User.objects.all().select_related('profile')
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUserGroup]
     
 
 
