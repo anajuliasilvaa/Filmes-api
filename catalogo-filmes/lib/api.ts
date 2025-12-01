@@ -356,3 +356,37 @@ export default {
   diretoresAPI,
   favoritosAPI,
 };
+
+// API de Avaliações
+export const avaliacoesAPI = {
+  async list() {
+    const response = await fetchWithAuth('/api/v1/avaliacoes/');
+    if (!response.ok) throw new Error('Erro ao buscar avaliações');
+    return response.json();
+  },
+
+  async create(data: { filme: number; comentario: string; nota: number }) {
+    const response = await fetchWithAuth('/api/v1/avaliacoes/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao criar avaliação');
+    return response.json();
+  },
+
+  async update(id: number, data: { comentario?: string; nota?: number }) {
+    const response = await fetchWithAuth(`/api/v1/avaliacoes/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar avaliação');
+    return response.json();
+  },
+
+  async delete(id: number) {
+    const response = await fetchWithAuth(`/api/v1/avaliacoes/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar avaliação');
+  },
+};
