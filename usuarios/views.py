@@ -1,11 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
+from django.core.mail import send_mail
+from django.conf import settings
 from .serializer import RegisterSerializer, UserSerializer, ProfileSerializer
 from .permissions import IsAdminUserGroup, IsGeneralOrAdmin
 from .disney_service import DisneyAPIService
@@ -13,6 +16,7 @@ from .disney_service import DisneyAPIService
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
 
 @api_view(["POST"])
@@ -104,3 +108,75 @@ class AvatarRandomView(APIView):
         profile.save()
 
         return Response({"detail": "Avatar aleatório atribuído!"})
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response(
+                {"detail": "Senha atual e nova senha são obrigatórias"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not check_password(old_password, user.password):
+            return Response(
+                {"detail": "Senha atual incorreta"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if len(new_password) < 6:
+            return Response(
+                {"detail": "A nova senha deve ter pelo menos 6 caracteres"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"detail": "Senha alterada com sucesso!"})
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+
+        if not email:
+            return Response(
+                {"detail": "Email é obrigatório"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(email=email)
+            
+            # Tentar enviar email (se falhar, apenas loga o erro)
+            try:
+                send_mail(
+                    'Redefinição de Senha - Catálogo de Filmes',
+                    f'Olá {user.username},\n\nVocê solicitou a redefinição de senha.\n\nPara redefinir sua senha, acesse seu perfil e use a opção "Alterar Senha".\n\nSe você não solicitou esta redefinição, ignore este email.\n\nEquipe Catálogo de Filmes',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                # Se o email falhar, apenas loga mas não quebra a aplicação
+                print(f"Erro ao enviar email: {e}")
+            
+            # Sempre retorna sucesso por segurança
+            return Response({"detail": "Instruções enviadas para o email"})
+        
+        except User.DoesNotExist:
+            # Por segurança, não revelar se o email existe ou não
+            return Response({"detail": "Instruções enviadas para o email"})
+        except Exception as e:
+            # Captura qualquer outro erro
+            print(f"Erro inesperado: {e}")
+            return Response({"detail": "Instruções enviadas para o email"})

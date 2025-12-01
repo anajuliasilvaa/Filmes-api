@@ -20,8 +20,8 @@ class Filme(models.Model):
     ano_publicacao = models.PositiveIntegerField()
     duracao = models.DurationField(help_text="Formato: hh:mm:ss")
     poster = models.ImageField(upload_to='posters/', null=True, blank=True)
-    #generos = models.ManyToManyField(Genero, related_name='filmes')
-    #diretores = models.ManyToManyField(Diretor, blank=True)
+    generos = models.ManyToManyField(Genero, related_name='filmes')
+    diretores = models.ManyToManyField(Diretor, blank=True)
     
 
     def media_avaliacoes(self):

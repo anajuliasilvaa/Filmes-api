@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     RegisterView, ProfileView, AvatarListView, AvatarRandomView,
-    logout_api,
+    logout_api, ChangePasswordView, PasswordResetRequestView,
     UserListView, UserRetrieveUpdateDestroyView # Importação corrigida
 )
 
@@ -10,6 +10,10 @@ urlpatterns = [
     path('logout/', logout_api),
 
     path('perfil/', ProfileView.as_view()),
+    
+    # Alteração de senha
+    path('change-password/', ChangePasswordView.as_view()),
+    path('password-reset/', PasswordResetRequestView.as_view()),
 
     # Avatares
     path('avatar/', AvatarListView.as_view()),

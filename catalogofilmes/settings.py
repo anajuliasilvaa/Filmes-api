@@ -50,12 +50,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
-    'corsheaders',  # CORS para permitir requisições do frontend
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # CORS deve vir antes do CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -170,8 +170,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
     
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',    
-    'PAGE_SIZE': 3
+    # Paginação desabilitada para carregar todos os itens
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',    
+    # 'PAGE_SIZE': 3
 }
 
 SIMPLE_JWT = {
@@ -180,7 +181,7 @@ SIMPLE_JWT = {
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Next.js dev server
+    "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
