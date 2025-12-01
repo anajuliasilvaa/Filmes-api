@@ -68,7 +68,6 @@ export default function EscolherAvatarPage() {
     try {
       await authAPI.setAvatar(character.imageUrl, character.name);
       alert('Avatar atualizado com sucesso!');
-      // Forçar reload completo para atualizar o contexto
       window.location.href = '/perfil';
     } catch (err) {
       alert('Erro ao atualizar avatar');
@@ -79,7 +78,6 @@ export default function EscolherAvatarPage() {
     try {
       await authAPI.setRandomAvatar();
       alert('Avatar aleatório definido com sucesso!');
-      // Forçar reload completo para atualizar o contexto
       window.location.href = '/perfil';
     } catch (err) {
       alert('Erro ao definir avatar aleatório');

@@ -49,7 +49,6 @@ export default function FilmeDetailPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Redirecionar para login se não estiver autenticado
     if (!authLoading && !user) {
       router.push('/login');
       return;

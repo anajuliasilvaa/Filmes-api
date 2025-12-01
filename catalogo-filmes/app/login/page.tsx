@@ -24,7 +24,6 @@ export default function LoginPage() {
       ...prev,
       [name]: value
     }));
-    // Limpar erro do campo quando usuário começar a digitar
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -33,7 +32,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Validação simples
     const newErrors: { username?: string; password?: string } = {};
     
     if (!formData.username.trim()) {
@@ -54,7 +52,6 @@ export default function LoginPage() {
 
     try {
       await login(formData);
-      // Redirecionamento é feito automaticamente pelo AuthContext
     } catch (error: any) {
       console.error('Erro no login:', error);
       setErrors({ 
