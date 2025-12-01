@@ -1,0 +1,269 @@
+// Configuração base da API
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+  password2: string;
+  first_name?: string;
+  last_name?: string;
+}
+
+export interface TokenResponse {
+  access: string;
+  refresh: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  is_staff: boolean;
+  is_superuser: boolean;
+  profile?: {
+    avatar_url?: string;
+    avatar_name?: string;
+  };
+}
+
+// Helper para obter o token do localStorage
+const getAccessToken = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('access_token');
+  }
+  return null;
+};
+
+// Helper para fazer requisições autenticadas
+async function fetchWithAuth(url: string, options: RequestInit = {}) {
+  const token = getAccessToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    ...options,
+    headers,
+  });
+
+  // Se o token expirou, tentar renovar
+  if (response.status === 401 && token) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) {
+      // Tentar novamente com o novo token
+      headers['Authorization'] = `Bearer ${getAccessToken()}`;
+      return fetch(`${API_BASE_URL}${url}`, {
+        ...options,
+        headers,
+      });
+    }
+  }
+
+  return response;
+}
+
+// Renovar access token usando refresh token
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
+  
+  if (!refreshToken) return false;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (response.ok) {
+      const data: { access: string } = await response.json();
+      localStorage.setItem('access_token', data.access);
+      return true;
+    }
+  } catch (error) {
+    console.error('Erro ao renovar token:', error);
+  }
+
+  // Se falhou, limpar tokens
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  return false;
+}
+
+// API de Autenticação
+export const authAPI = {
+  async login(credentials: LoginCredentials): Promise<TokenResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/login/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Erro ao fazer login');
+    }
+
+    const data: TokenResponse = await response.json();
+    
+    // Salvar tokens no localStorage
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
+    
+    return data;
+  },
+
+  async register(data: RegisterData): Promise<User> {
+    const response = await fetch(`${API_BASE_URL}/api/user/register/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(JSON.stringify(error));
+    }
+
+    return response.json();
+  },
+
+  async logout(): Promise<void> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    
+    if (refreshToken) {
+      try {
+        await fetchWithAuth('/api/logout/', {
+          method: 'POST',
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+      } catch (error) {
+        console.error('Erro ao fazer logout:', error);
+      }
+    }
+
+    // Limpar tokens
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  },
+
+  async getProfile(): Promise<User> {
+    const response = await fetchWithAuth('/api/user/perfil/');
+    
+    if (!response.ok) {
+      throw new Error('Erro ao buscar perfil');
+    }
+
+    return response.json();
+  },
+
+  isAuthenticated(): boolean {
+    return !!getAccessToken();
+  },
+};
+
+// API de Filmes
+export const filmesAPI = {
+  async list(page: number = 1) {
+    const response = await fetchWithAuth(`/api/v1/filmes/?page=${page}`);
+    if (!response.ok) throw new Error('Erro ao buscar filmes');
+    return response.json();
+  },
+
+  async get(id: number) {
+    const response = await fetchWithAuth(`/api/v1/filmes/${id}/`);
+    if (!response.ok) throw new Error('Erro ao buscar filme');
+    return response.json();
+  },
+
+  async create(data: any) {
+    const response = await fetchWithAuth('/api/v1/filmes/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao criar filme');
+    return response.json();
+  },
+
+  async update(id: number, data: any) {
+    const response = await fetchWithAuth(`/api/v1/filmes/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar filme');
+    return response.json();
+  },
+
+  async delete(id: number) {
+    const response = await fetchWithAuth(`/api/v1/filmes/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar filme');
+  },
+};
+
+// API de Gêneros
+export const generosAPI = {
+  async list() {
+    const response = await fetchWithAuth('/api/v1/generos/');
+    if (!response.ok) throw new Error('Erro ao buscar gêneros');
+    return response.json();
+  },
+};
+
+// API de Diretores
+export const diretoresAPI = {
+  async list() {
+    const response = await fetchWithAuth('/api/v1/diretores/');
+    if (!response.ok) throw new Error('Erro ao buscar diretores');
+    return response.json();
+  },
+};
+
+// API de Favoritos
+export const favoritosAPI = {
+  async list() {
+    const response = await fetchWithAuth('/api/v1/favoritos/');
+    if (!response.ok) throw new Error('Erro ao buscar favoritos');
+    return response.json();
+  },
+
+  async create(nome: string) {
+    const response = await fetchWithAuth('/api/v1/favoritos/', {
+      method: 'POST',
+      body: JSON.stringify({ nome }),
+    });
+    if (!response.ok) throw new Error('Erro ao criar lista');
+    return response.json();
+  },
+
+  async addFilme(listaId: number, filmeId: number) {
+    const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/filmes/`, {
+      method: 'POST',
+      body: JSON.stringify({ filme_id: filmeId }),
+    });
+    if (!response.ok) throw new Error('Erro ao adicionar filme');
+    return response.json();
+  },
+};
+
+export default {
+  authAPI,
+  filmesAPI,
+  generosAPI,
+  diretoresAPI,
+  favoritosAPI,
+};

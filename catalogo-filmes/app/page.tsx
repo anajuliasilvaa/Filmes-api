@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,7 +11,8 @@ export default function LoginPage() {
     password: ''
   });
   const [errors, setErrors] = useState<{ username?: string; password?: string; general?: string }>({});
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -48,17 +49,19 @@ export default function LoginPage() {
       return;
     }
 
+    setIsLoading(true);
+    setErrors({});
+
     try {
-      // Aqui você faria a chamada para sua API de login
-      console.log('Dados do login:', formData);
-      
-      // Simulando login bem-sucedido
-      // await loginAPI(formData);
-      
-      // Redirecionar para a página inicial
-      router.push('/');
-    } catch (error) {
-      setErrors({ general: 'Erro ao fazer login. Verifique suas credenciais.' });
+      await login(formData);
+      // Redirecionamento é feito automaticamente pelo AuthContext
+    } catch (error: any) {
+      console.error('Erro no login:', error);
+      setErrors({ 
+        general: error.message || 'Erro ao fazer login. Verifique suas credenciais.' 
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,6 +203,7 @@ export default function LoginPage() {
                     <div className="d-grid mb-4">
                       <button
                         type="submit"
+                        disabled={isLoading}
                         className="btn btn-lg py-3 fw-bold text-white"
                         style={{
                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -216,8 +220,17 @@ export default function LoginPage() {
                           e.currentTarget.style.boxShadow = 'none';
                         }}
                       >
-                        <i className="fas fa-sign-in-alt me-2"></i>
-                        Entrar na Plataforma
+                        {isLoading ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Entrando...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fas fa-sign-in-alt me-2"></i>
+                            Entrar na Plataforma
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
