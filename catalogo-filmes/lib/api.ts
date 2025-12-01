@@ -170,6 +170,69 @@ export const authAPI = {
     return response.json();
   },
 
+  async updateProfile(data: { email?: string }): Promise<User> {
+    const response = await fetchWithAuth('/api/user/perfil/', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Erro ao atualizar perfil');
+    }
+
+    return response.json();
+  },
+
+  async changePassword(data: { old_password: string; new_password: string }): Promise<void> {
+    const response = await fetchWithAuth('/api/user/change-password/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || error.old_password?.[0] || error.new_password?.[0] || 'Erro ao alterar senha');
+    }
+  },
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/api/user/password-reset/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Erro ao solicitar redefinição de senha');
+    }
+  },
+
+  async getAvatars(page: number = 1, search?: string) {
+    const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
+    const response = await fetchWithAuth(`/api/user/avatar/?page=${page}${searchParam}`);
+    if (!response.ok) throw new Error('Erro ao buscar avatares');
+    return response.json();
+  },
+
+  async setAvatar(avatarUrl: string, avatarName: string) {
+    const response = await fetchWithAuth('/api/user/avatar/', {
+      method: 'POST',
+      body: JSON.stringify({ avatar_url: avatarUrl, avatar_name: avatarName }),
+    });
+    if (!response.ok) throw new Error('Erro ao definir avatar');
+    return response.json();
+  },
+
+  async setRandomAvatar() {
+    const response = await fetchWithAuth('/api/user/avatar/random/', {
+      method: 'POST',
+    });
+    if (!response.ok) throw new Error('Erro ao definir avatar aleatório');
+    return response.json();
+  },
+
   isAuthenticated(): boolean {
     return !!getAccessToken();
   },
@@ -178,7 +241,9 @@ export const authAPI = {
 // API de Filmes
 export const filmesAPI = {
   async list(page: number = 1) {
-    const response = await fetchWithAuth(`/api/v1/filmes/?page=${page}`);
+    // Adicionar timestamp para evitar cache
+    const timestamp = new Date().getTime();
+    const response = await fetchWithAuth(`/api/v1/filmes/?page=${page}&_t=${timestamp}`);
     if (!response.ok) throw new Error('Erro ao buscar filmes');
     return response.json();
   },
@@ -190,19 +255,43 @@ export const filmesAPI = {
   },
 
   async create(data: any) {
-    const response = await fetchWithAuth('/api/v1/filmes/', {
+    const token = getAccessToken();
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Se for FormData, não adicionar Content-Type (o browser faz automaticamente)
+    const isFormData = data instanceof FormData;
+    
+    const response = await fetch(`${API_BASE_URL}/api/v1/filmes/`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
+    
     if (!response.ok) throw new Error('Erro ao criar filme');
     return response.json();
   },
 
   async update(id: number, data: any) {
-    const response = await fetchWithAuth(`/api/v1/filmes/${id}/`, {
+    const token = getAccessToken();
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Se for FormData, não adicionar Content-Type
+    const isFormData = data instanceof FormData;
+    
+    const response = await fetch(`${API_BASE_URL}/api/v1/filmes/${id}/`, {
       method: 'PUT',
-      body: JSON.stringify(data),
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
+    
     if (!response.ok) throw new Error('Erro ao atualizar filme');
     return response.json();
   },

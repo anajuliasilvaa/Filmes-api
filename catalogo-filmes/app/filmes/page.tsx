@@ -27,7 +27,7 @@ interface Filme {
   media_avaliacoes: number;
 }
 
-export default function HomePage() {
+export default function FilmesPage() {
   const { user, isAdmin } = useAuth();
   const [filmes, setFilmes] = useState<Filme[]>([]);
   const [generos, setGeneros] = useState<Genero[]>([]);
@@ -46,11 +46,8 @@ export default function HomePage() {
         generosAPI.list()
       ]);
       
-      const filmesArray = Array.isArray(filmesData) ? filmesData : (filmesData.results || []);
-      const generosArray = Array.isArray(generosData) ? generosData : (generosData.results || []);
-      
-      setFilmes(filmesArray);
-      setGeneros(generosArray);
+      setFilmes(filmesData.results || filmesData);
+      setGeneros(generosData.results || generosData);
     } catch (err: any) {
       setError('Erro ao carregar filmes');
     } finally {
@@ -111,91 +108,19 @@ export default function HomePage() {
       <div className="container-fluid p-5 bg-light">
         <div className="mb-5 text-center">
           <h5 className="section-title">Nosso Catálogo</h5>
-          <h1 className="display-4 mb-0">Filmes por Gênero</h1>
+          <h1 className="display-4 mb-0">Todos os Filmes</h1>
+          <p className="text-muted mt-2">Total: {filmes.length} filmes</p>
         </div>
 
         {error && (
           <div className="alert alert-danger text-center">{error}</div>
         )}
         
-        {/* Mostrar todos os filmes se não tiverem gêneros */}
-        {filmes.length > 0 && (!filmes[0]?.generos || filmes[0].generos.length === 0) ? (
+        {/* Mostrar TODOS os filmes */}
+        {filmes && filmes.length > 0 ? (
           <div className="genre-section mb-5">
-            <h2 className="genre-title mb-4">Todos os Filmes</h2>
             <div className="row g-4">
               {filmes.map((filme) => (
-                <div key={filme.id} className="col-lg-3 col-md-6">
-                  <div className="movie-card">
-                    {filme.poster ? (
-                      <img src={filme.poster} alt={`Poster de ${filme.titulo}`} className="movie-poster" />
-                    ) : (
-                      <div className="movie-poster bg-secondary d-flex align-items-center justify-content-center">
-                        <i className="bi bi-film text-white" style={{ fontSize: '3rem' }}></i>
-                      </div>
-                    )}
-
-                    <div className="movie-rating">
-                      ⭐ {filme.media_avaliacoes?.toFixed(1) || 'N/A'}
-                    </div>
-                    
-                    <div className="p-3">
-                      <h5 className="mb-2">{filme.titulo}</h5>
-                      <p className="text-muted mb-2">{filme.ano_publicacao}</p>
-                      
-                      {filme.diretores && filme.diretores.length > 0 ? (
-                        <p className="small text-muted mb-3">
-                          Dirigido por: {filme.diretores.map(d => d?.nome || 'Desconhecido').join(', ')}
-                        </p>
-                      ) : (
-                        <p className="small text-muted mb-3">Diretor(es) não informado(s)</p>
-                      )}
-                      
-                      <div className="d-flex justify-content-between align-items-center">
-                        <Link href={`/filmes/${filme.id}`} className="btn btn-primary btn-sm">
-                          <i className="bi bi-info-circle me-1"></i>Detalhes
-                        </Link>
-                        
-                        {isAdmin && (
-                          <div className="dropdown">
-                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                              <i className="bi bi-gear"></i>
-                            </button>
-                            <ul className="dropdown-menu">
-                              <li>
-                                <Link className="dropdown-item" href={`/filmes/${filme.id}/editar`}>
-                                  <i className="bi bi-pencil me-2"></i>Editar
-                                </Link>
-                              </li>
-                              <li>
-                                <a className="dropdown-item text-danger" href="#" onClick={(e) => {
-                                  e.preventDefault();
-                                  if (confirm('Tem certeza que deseja deletar este filme?')) {
-                                    filmesAPI.delete(filme.id).then(() => loadData());
-                                  }
-                                }}>
-                                  <i className="bi bi-trash me-2"></i>Deletar
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : generos && generos.length > 0 ? generos.map((genero) => {
-          const filmesDoGenero = getFilmesPorGenero(genero.id);
-          
-          if (filmesDoGenero.length === 0) return null;
-          
-          return (
-            <div key={genero.id} className="genre-section mb-5">
-              <h2 className="genre-title mb-4">{genero.nome}</h2>
-              <div className="row g-4">
-                {filmesDoGenero.map((filme) => (
                   <div key={filme.id} className="col-lg-3 col-md-6">
                     <div className="movie-card">
                       {filme.poster ? (
@@ -213,7 +138,9 @@ export default function HomePage() {
                       <div className="p-3">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <h5 className="mb-0">{filme.titulo}</h5>
-                          <span className="movie-genre-tag-inline">{genero.nome}</span>
+                          {filme.generos && filme.generos.length > 0 && (
+                            <span className="movie-genre-tag-inline">{filme.generos[0].nome}</span>
+                          )}
                         </div>
                         <p className="text-muted mb-2">{filme.ano_publicacao}</p>
                         
@@ -258,46 +185,21 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          );
-        }) : null}
-
-        {/* Mensagem se não houver filmes */}
-        {filmes.length === 0 && !loading && (
-          <div className="genre-section mb-5">
-            <h2 className="genre-title mb-4">Todos os Filmes</h2>
-            <div className="row g-4">
-              {filmes.map((filme) => (
-                <div key={filme.id} className="col-lg-3 col-md-6">
-                  <div className="movie-card">
-                    {filme.poster ? (
-                      <img src={filme.poster} alt={`Poster de ${filme.titulo}`} className="movie-poster" />
-                    ) : (
-                      <div className="movie-poster bg-secondary d-flex align-items-center justify-content-center">
-                        <i className="bi bi-film text-white" style={{ fontSize: '3rem' }}></i>
-                      </div>
-                    )}
-
-                    <div className="movie-rating">
-                      ⭐ {filme.media_avaliacoes?.toFixed(1) || 'N/A'}
-                    </div>
-                    
-                    <div className="p-3">
-                      <h5 className="mb-2">{filme.titulo}</h5>
-                      <p className="text-muted mb-2">{filme.ano_publicacao}</p>
-                      
-                      <div className="d-flex justify-content-between align-items-center">
-                        <Link href={`/filmes/${filme.id}`} className="btn btn-primary btn-sm">
-                          <i className="bi bi-info-circle me-1"></i>Detalhes
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               ))}
             </div>
+          </div>
+        ) : null}
+
+        {(!filmes || filmes.length === 0) && !loading && (
+          <div className="text-center py-5">
+            <i className="bi bi-collection text-muted mb-3" style={{ fontSize: '4rem' }}></i>
+            <h3 className="text-muted">Nenhum filme cadastrado ainda.</h3>
+            <p className="text-muted">Adicione filmes para começar.</p>
+            {isAdmin && (
+              <Link href="/filmes/adicionar" className="btn btn-primary mt-3">
+                <i className="bi bi-plus-circle me-2"></i>Adicionar Primeiro Filme
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -330,7 +232,6 @@ export default function HomePage() {
           box-shadow: 0 4px 15px rgba(0,0,0,0.1);
           transition: all 0.3s ease;
           height: 100%;
-          position: relative;
         }
 
         .movie-card:hover {
@@ -342,6 +243,7 @@ export default function HomePage() {
           width: 100%;
           height: 300px;
           object-fit: cover;
+          position: relative;
         }
 
         .movie-rating {
@@ -354,7 +256,6 @@ export default function HomePage() {
           border-radius: 20px;
           font-size: 14px;
           font-weight: bold;
-          z-index: 10;
         }
 
         .movie-genre-tag-inline {

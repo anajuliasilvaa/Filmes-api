@@ -1,0 +1,463 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-user-edit me-3"></i>
+                    Editar Diretor
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    Atualize as informações de: <strong>{{ diretor.nome }}</strong>
+                </p>
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                        <i class="fas fa-edit me-2"></i>Editar Perfil
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 class="mb-0">
+                            <i class="fas fa-user-tie me-2"></i>
+                            Atualizar Dados
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+                            
+                            <!-- Nome -->
+                            <div class="mb-4">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-user me-2"></i>{{ form.nome.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    {{ form.nome }}
+                                </div>
+                                {% if form.nome.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.nome.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Data de Nascimento -->
+                            <div class="mb-4">
+                                <label for="{{ form.data_nascimento.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-birthday-cake me-2"></i>{{ form.data_nascimento.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    {{ form.data_nascimento }}
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Formato: DD/MM/AAAA (opcional)
+                                </small>
+                                {% if form.data_nascimento.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.data_nascimento.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Biografia -->
+                            <div class="mb-4">
+                                <label for="{{ form.biografia.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-book me-2"></i>{{ form.biografia.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text align-items-start pt-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-book"></i>
+                                    </span>
+                                    {{ form.biografia }}
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Informações sobre a carreira e vida do diretor (opcional)
+                                </small>
+                                {% if form.biografia.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.biografia.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Foto -->
+                            <div class="mb-4">
+                                <label for="{{ form.foto.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-camera me-2"></i>{{ form.foto.label }}
+                                </label>
+                                
+                                <!-- Preview da foto atual -->
+                                {% if diretor.foto %}
+                                    <div class="current-photo mb-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <img src="{{ diretor.foto.url }}" alt="{{ diretor.nome }}" class="current-photo-preview">
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="mb-1">Foto atual</h6>
+                                                <p class="text-muted mb-0 small">{{ diretor.nome }}</p>
+                                                <button type="button" class="btn btn-outline-danger btn-sm mt-2" onclick="removeFoto()">
+                                                    <i class="fas fa-trash me-1"></i>Remover foto
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Upload Area -->
+                                <div class="upload-area" onclick="document.getElementById('{{ form.foto.id_for_label }}').click()">
+                                    <div class="upload-content">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <p class="upload-text">
+                                            {% if diretor.foto %}
+                                                Clique para alterar a foto
+                                            {% else %}
+                                                Clique para selecionar uma foto
+                                            {% endif %}
+                                        </p>
+                                        <p class="upload-hint">ou arraste e solte aqui</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Campo oculto do Django -->
+                                <div style="display: none;">
+                                    {{ form.foto }}
+                                </div>
+                                
+                                <!-- Nome do arquivo selecionado -->
+                                <div id="file-selected" class="mt-2" style="display: none;">
+                                    <small class="text-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Novo arquivo selecionado: <span id="file-name"></span>
+                                    </small>
+                                </div>
+                                
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB (opcional)
+                                </small>
+                                
+                                {% if form.foto.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.foto.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'diretores:detalhar_diretor' diretor.id %}" class="btn btn-outline-secondary btn-lg me-md-2" style="border-radius: 25px;">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-warning btn-lg" style="border-radius: 25px; background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%); border: none; color: white;">
+                                    <i class="fas fa-save me-2"></i>Salvar Alterações
+                                </button>
+                            </div>
+    </form>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Estilização dos campos do formulário */
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 0 10px 10px 0;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background: #fff;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    /* Input Groups */
+    .input-group-text {
+        border: 2px solid #e9ecef;
+        border-right: none;
+        border-radius: 10px 0 0 10px;
+        width: 50px;
+        justify-content: center;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    /* Current Photo Preview */
+    .current-photo {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 15px;
+    }
+
+    .current-photo-preview {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Upload Area */
+    .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(102, 126, 234, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-area:hover {
+        border-color: #764ba2;
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .upload-area:hover::before {
+        left: 100%;
+    }
+
+    .upload-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .upload-text {
+        font-size: 1.1rem;
+        color: #495057;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .upload-hint {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    /* Botões */
+    .btn {
+        padding: 12px 25px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+        font-size: 0.875rem;
+        padding: 5px 15px;
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+
+    /* Labels */
+    .form-label {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+
+    /* Validação */
+    .text-danger {
+        font-size: 0.875rem;
+    }
+
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 30px 20px !important;
+        }
+        
+        .upload-area {
+            padding: 30px 15px;
+        }
+        
+        .upload-icon {
+            font-size: 2rem;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+        }
+        
+        .current-photo-preview {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+
+<script>
+    // Upload de arquivo
+    document.getElementById('{{ form.foto.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const fileSelected = document.getElementById('file-selected');
+        const fileName = document.getElementById('file-name');
+        
+        if (file) {
+            fileName.textContent = file.name;
+            fileSelected.style.display = 'block';
+        } else {
+            fileSelected.style.display = 'none';
+        }
+    });
+
+    // Remover foto atual
+    function removeFoto() {
+        if (confirm('Tem certeza que deseja remover a foto atual?')) {
+            const currentPhotoDiv = document.querySelector('.current-photo');
+            if (currentPhotoDiv) {
+                currentPhotoDiv.style.display = 'none';
+            }
+            // Limpar o campo de arquivo
+            document.getElementById('{{ form.foto.id_for_label }}').value = '';
+            document.getElementById('file-selected').style.display = 'none';
+            
+            // Atualizar texto do upload
+            document.querySelector('.upload-text').textContent = 'Clique para selecionar uma foto';
+        }
+    }
+
+    // Drag and drop
+    const uploadArea = document.querySelector('.upload-area');
+    
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#764ba2';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.15)';
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('{{ form.foto.id_for_label }}').files = files;
+            
+            // Trigger change event
+            const event = new Event('change');
+            document.getElementById('{{ form.foto.id_for_label }}').dispatchEvent(event);
+        }
+    });
+
+    // Validação em tempo real
+    document.querySelectorAll('.form-control').forEach(function(input) {
+        input.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+</script>
+
+{% endblock content %}

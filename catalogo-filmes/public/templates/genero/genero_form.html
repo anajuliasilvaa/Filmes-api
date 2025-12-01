@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-plus-circle me-3"></i>
+                    {% if form.instance.pk %}Editar Gênero{% else %}Novo Gênero{% endif %}
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    {% if form.instance.pk %}
+                        Atualize as informações do gênero cinematográfico
+                    {% else %}
+                        Adicione um novo gênero ao catálogo de filmes
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 class="mb-0">
+                            <i class="fas fa-film me-2"></i>
+                            {% if form.instance.pk %}Editar Gênero{% else %}Dados do Gênero{% endif %}
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Nome do Gênero -->
+                            <div class="mb-4">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-tag me-2"></i>Nome do Gênero
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-film"></i>
+                                    </span>
+                                    {{ form.nome }}
+                                </div>
+                                {% if form.nome.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.nome.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Descrição do Gênero (se existir) -->
+                            {% if form.descricao %}
+                            <div class="mb-4">
+                                <label for="{{ form.descricao.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-align-left me-2"></i>Descrição
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-align-left"></i>
+                                    </span>
+                                    {{ form.descricao }}
+                                </div>
+                                {% if form.descricao.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.descricao.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Botões de Ação -->
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <a href="{% url 'listar_generos' %}" class="btn btn-outline-secondary btn-lg px-4 py-2 wow fadeInLeft" data-wow-delay="0.4s" style="border-radius: 25px; transition: all 0.3s ease;">
+                                    <i class="fas fa-arrow-left me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-lg px-5 py-2 wow fadeInRight" data-wow-delay="0.4s" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 25px; color: white; transition: all 0.3s ease; transform: translateY(0);">
+                                    <i class="fas fa-save me-2"></i>
+                                    {% if form.instance.pk %}Atualizar{% else %}Salvar{% endif %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Estilização dos inputs */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+    transform: translateY(-2px);
+}
+
+.input-group-text {
+    border: none;
+    border-radius: 10px 0 0 10px;
+    padding: 12px 15px;
+}
+
+.form-control {
+    border-radius: 0 10px 10px 0;
+}
+
+/* Hover effects nos botões */
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Animações customizadas */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 30vh;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    
+    .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* Validação visual */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Efeitos de loading no botão */
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+</style>
+
+<script>
+// Validação do formulário
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.needs-validation');
+    const inputs = form.querySelectorAll('.form-control');
+    
+    // Adiciona efeitos visuais nos inputs
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Validação customizada
+    form.addEventListener('submit', function(e) {
+        const nomeInput = document.querySelector('#id_nome');
+        
+        if (nomeInput.value.trim() === '') {
+            e.preventDefault();
+            nomeInput.classList.add('is-invalid');
+            nomeInput.focus();
+            
+            // Remove a classe após 3 segundos
+            setTimeout(() => {
+                nomeInput.classList.remove('is-invalid');
+            }, 3000);
+        }
+    });
+});
+</script>
+{% endblock %}
+
+

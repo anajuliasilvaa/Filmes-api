@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4><i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h5>Tem certeza que deseja excluir o filme:</h5>
+                    <h3 class="text-danger">"{{ object.titulo }}"?</h3>
+                    
+                    <div class="alert alert-warning mt-3">
+                        Esta ação não pode ser desfeita!
+                    </div>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger me-2">
+                            <i class="bi bi-trash"></i> Sim, Excluir
+                        </button>
+                        <a href="{% url 'index' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

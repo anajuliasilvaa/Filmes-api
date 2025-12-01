@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-star me-3"></i>
+                    Avaliar Filme
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    Compartilhe sua opinião sobre: <strong>{{ filme.titulo }}</strong>
+                </p>
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                        <i class="fas fa-film me-2"></i>{{ filme.titulo }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 class="mb-0">
+                            <i class="fas fa-star me-2"></i>
+                            Sua Avaliação
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Nota -->
+                            <div class="mb-4">
+                                <label for="{{ form.nota.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-star me-2"></i>{{ form.nota.label }}
+                                </label>
+                                <div class="rating-container">
+                                    <!-- Rating com estrelas interativas -->
+                                    <div class="star-rating mb-3">
+                                        <span class="star" data-rating="1">★</span>
+                                        <span class="star" data-rating="2">★</span>
+                                        <span class="star" data-rating="3">★</span>
+                                        <span class="star" data-rating="4">★</span>
+                                        <span class="star" data-rating="5">★</span>
+                                    </div>
+                                    <div class="rating-text text-center mb-3">
+                                        <span id="rating-description" class="text-muted">Clique nas estrelas para avaliar</span>
+                                    </div>
+                                    <!-- Campo oculto para o Django -->
+                                    <div style="display: none;">
+                                        {{ form.nota }}
+                                    </div>
+                                </div>
+                                {% if form.nota.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.nota.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Comentário -->
+                            <div class="mb-4">
+                                <label for="{{ form.comentario.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-comment me-2"></i>{{ form.comentario.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-comment"></i>
+                                    </span>
+                                    {{ form.comentario }}
+                                </div>
+                                <small class="text-muted mt-1">Compartilhe sua opinião sobre o filme</small>
+                                {% if form.comentario.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.comentario.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Dica -->
+                            <div class="alert alert-info border-0 shadow-sm mb-4" role="alert" style="border-radius: 10px;">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                <strong>Dica:</strong> Sua avaliação ajuda outros usuários a descobrirem filmes incríveis!
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <a href="{% url 'detalhes_filme' filme.id %}" class="btn btn-outline-secondary btn-lg px-4 py-2 wow fadeInLeft" data-wow-delay="0.4s" style="border-radius: 25px; transition: all 0.3s ease;">
+                                    <i class="fas fa-arrow-left me-2"></i>Voltar ao Filme
+                                </a>
+                                <button type="submit" class="btn btn-lg px-5 py-2 wow fadeInRight" data-wow-delay="0.4s" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 25px; color: white; transition: all 0.3s ease; transform: translateY(0);" id="submitBtn">
+                                    <i class="fas fa-paper-plane me-2"></i>Enviar Avaliação
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Estilização dos inputs */
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+    transform: translateY(-2px);
+}
+
+/* Estilização de textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Estilização dos input-group */
+.input-group-text {
+    border: none;
+    border-radius: 10px 0 0 10px;
+    padding: 12px 15px;
+}
+
+.input-group > .form-control:not(:first-child) {
+    border-radius: 0 10px 10px 0;
+}
+
+.input-group > .form-control:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+/* Estilização das estrelas */
+.star-rating {
+    text-align: center;
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.star {
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+    display: inline-block;
+    position: relative;
+}
+
+.star:hover {
+    color: #ffc107;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.star.active {
+    color: #ffc107;
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.star.active:hover {
+    transform: scale(1.3);
+}
+
+/* Texto de descrição da nota */
+.rating-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Badges das estrelas no hero */
+.badge {
+    transition: all 0.3s ease;
+}
+
+.badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Hover effects nos botões */
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Animações customizadas */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Estilização dos alertas */
+.alert {
+    border-left: 4px solid;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.alert-info {
+    border-left-color: #0dcaf0;
+    background: linear-gradient(135deg, #d1ecf1 0%, #b6d4fe 100%);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 30vh;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    
+    .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .star-rating {
+        font-size: 2.5rem;
+    }
+    
+    .star {
+        margin: 0 2px;
+    }
+}
+
+/* Validação visual */
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Efeitos de loading no botão */
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Animação de pulso para estrelas selecionadas */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.star.selected {
+    animation: pulse 0.3s ease-in-out;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.needs-validation');
+    const stars = document.querySelectorAll('.star');
+    const ratingDescription = document.getElementById('rating-description');
+    const hiddenInput = document.getElementById('{{ form.nota.id_for_label }}');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Descrições para cada nota
+    const ratingDescriptions = {
+        1: "⭐ Péssimo - Não recomendo",
+        2: "⭐⭐ Ruim - Problemas sérios",
+        3: "⭐⭐⭐ Regular - Mediano",
+        4: "⭐⭐⭐⭐ Bom - Recomendo",
+        5: "⭐⭐⭐⭐⭐ Excelente - Imperdível!"
+    };
+    
+    let currentRating = 0;
+    
+    // Funcionalidade das estrelas
+    stars.forEach((star, index) => {
+        star.addEventListener('click', function() {
+            currentRating = parseInt(this.getAttribute('data-rating'));
+            hiddenInput.value = currentRating;
+            
+            // Atualiza visual das estrelas
+            updateStars(currentRating);
+            
+            // Atualiza descrição
+            ratingDescription.textContent = ratingDescriptions[currentRating];
+            ratingDescription.style.color = '#667eea';
+            
+            // Adiciona animação de pulso
+            this.classList.add('selected');
+            setTimeout(() => {
+                this.classList.remove('selected');
+            }, 300);
+        });
+        
+        star.addEventListener('mouseenter', function() {
+            const hoverRating = parseInt(this.getAttribute('data-rating'));
+            updateStars(hoverRating);
+            ratingDescription.textContent = ratingDescriptions[hoverRating];
+            ratingDescription.style.color = '#ffc107';
+        });
+    });
+    
+    // Reset ao sair da área das estrelas
+    document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        updateStars(currentRating);
+        if (currentRating > 0) {
+            ratingDescription.textContent = ratingDescriptions[currentRating];
+            ratingDescription.style.color = '#667eea';
+        } else {
+            ratingDescription.textContent = 'Clique nas estrelas para avaliar';
+            ratingDescription.style.color = '#6c757d';
+        }
+    });
+    
+    function updateStars(rating) {
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+    
+    // Adiciona efeitos visuais nos inputs
+    const inputs = form.querySelectorAll('.form-control, .form-select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.parentElement.classList.contains('input-group')) {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.parentElement.classList.contains('input-group')) {
+                this.parentElement.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Validação customizada
+    form.addEventListener('submit', function(e) {
+        const comentarioInput = document.querySelector('#id_comentario');
+        
+        let isValid = true;
+        
+        // Valida nota
+        if (currentRating === 0) {
+            e.preventDefault();
+            ratingDescription.textContent = 'Por favor, selecione uma nota';
+            ratingDescription.style.color = '#dc3545';
+            isValid = false;
+            
+            // Adiciona shake nas estrelas
+            stars.forEach(star => {
+                star.style.animation = 'shake 0.5s';
+            });
+            
+            setTimeout(() => {
+                stars.forEach(star => {
+                    star.style.animation = '';
+                });
+            }, 500);
+        }
+        
+        // Valida comentário
+        if (comentarioInput.value.trim() === '') {
+            e.preventDefault();
+            comentarioInput.classList.add('is-invalid');
+            comentarioInput.focus();
+            isValid = false;
+        }
+        
+        if (isValid) {
+            // Adiciona efeito de loading
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+            submitBtn.disabled = true;
+        } else {
+            // Remove a classe após 3 segundos
+            setTimeout(() => {
+                comentarioInput.classList.remove('is-invalid');
+                ratingDescription.textContent = 'Clique nas estrelas para avaliar';
+                ratingDescription.style.color = '#6c757d';
+            }, 3000);
+        }
+    });
+});
+</script>
+{% endblock %}

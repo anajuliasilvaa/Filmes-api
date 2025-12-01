@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- Hero Section Start -->
+    <div class="container-fluid hero-section d-flex align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container" >
+            <div class="row g-5 py-5">
+                <div class="col-12 text-center wow fadeIn" data-wow-delay="0.1s">
+                    <h1 class="display-2 text-white mb-4">Catálogo de Filmes</h1>
+                    <p class="lead text-white mb-4">Descubra, avalie e organize seus filmes favoritos</p>
+                    <i class="bi bi-arrow-down animate-up-down text-white" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero Section End -->
+
+    <!-- Admin Controls -->
+    {% if user.is_authenticated %}
+        {% for group in user.groups.all %}
+            {% if group.name == 'Administradores' %}
+                <div class="container mt-4">
+                    <div class="admin-controls text-center wow fadeIn" data-wow-delay="0.1s">
+                        <h6 class="section-title mb-3">Painel Administrativo</h6>
+                        <a href="{% url 'addFilme' %}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>Adicionar Filme
+                        </a>
+                        <a href="{% url 'criar_genero' %}" class="btn btn-info btn-sm">
+                            <i class="bi bi-tag me-1"></i>Adicionar Gênero
+                        </a>
+                        <a href="{% url 'diretores:adicionar_diretor' %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-person-plus me-1"></i>Adicionar Diretor
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Movies Section Start -->
+    <div class="container-fluid p-5 bg-light">
+        <div class="mb-5 text-center wow fadeIn" data-wow-delay="0.1s">
+            <h5 class="section-title">Nosso Catálogo</h5>
+            <h1 class="display-4 mb-0">Filmes por Gênero</h1>
+        </div>
+        
+        {% for genero in generos %}
+            <div class="genre-section">
+                <h2 class="genre-title wow fadeIn" data-wow-delay="0.1s">{{ genero.nome }}</h2>
+                <div class="row g-4">
+                    {% for filme in genero.filmes.all %}
+                        <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.{{ forloop.counter }}s">
+                            <div class="movie-card">
+                                {% if filme.poster %}
+                                    <img src="{{ filme.poster.url }}" alt="Poster de {{ filme.titulo }}" class="movie-poster">
+                                {% else %}
+                                    <div class="movie-poster bg-secondary d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-film text-white" style="font-size: 3rem;"></i>
+                                    </div>
+                                {% endif %}
+
+                        
+                                <div class="movie-rating">
+                                    ⭐ {{ filme.media_avaliacoes|default:"N/A" }}
+                                </div>
+                                
+                                <div class="p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="mb-0">{{ filme.titulo }}</h5>
+                                        <span class="movie-genre-tag-inline">{{ genero.nome }}</span>
+                                    </div>
+                                    <p class="text-muted mb-2">{{ filme.ano_publicacao }}</p>
+                                    
+                                    {% if filme.diretores.all %}
+                                        <p class="small text-muted mb-3">
+                                            Dirigido por: 
+                                            {% for diretor in filme.diretores.all %}
+                                                <a href="{% url 'diretores:detalhar_diretor' diretor.id %}" class="text-decoration-none">{{ diretor.nome }}</a>{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% else %}
+                                        <p class="small text-muted mb-3">Diretor(es) não informado(s)</p>
+                                    {% endif %}
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="{% url 'detalhes_filme' filme.id %}" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-info-circle me-1"></i>Detalhes
+                                        </a>
+                                        
+                                        {% if user.is_authenticated %}
+                                            {% for group in user.groups.all %}
+                                                {% if group.name == 'Administradores' %}
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            <i class="bi bi-gear"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="{% url 'editar_filme' filme.id %}">
+                                                                <i class="bi bi-pencil me-2"></i>Editar
+                                                            </a></li>
+                                                            <li><a class="dropdown-item text-danger" href="{% url 'delete' filme.id %}">
+                                                                <i class="bi bi-trash me-2"></i>Deletar
+                                                            </a></li>
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="text-center py-5">
+                                <i class="bi bi-film text-muted mb-3" style="font-size: 3rem;"></i>
+                                <p class="text-muted">Não há filmes cadastrados para este gênero.</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-collection text-muted mb-3" style="font-size: 4rem;"></i>
+                <h3 class="text-muted">Nenhum gênero cadastrado ainda.</h3>
+                <p class="text-muted">Adicione gêneros e filmes para começar.</p>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- Movies Section End -->
+
+    <!-- Stats Section Start -->
+    <div class="container-fluid stats-section p-5 my-5">
+        <div class="row gx-5 gy-4 py-5">
+            <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.1s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-film fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Filmes</h5>
+                        <h1 class="stats-number">{{ generos|length }}</h1>
+                        <small class="text-secondary">Gêneros</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.2s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-users fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Diretores</h5>
+                        <h1 class="stats-number">{{ diretores_destaque|length }}</h1>
+                        <small class="text-secondary">Em Destaque</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.3s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-star fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Avaliações</h5>
+                        <h1 class="stats-number">∞</h1>
+                        <small class="text-secondary">Possibilidades</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.4s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-heart fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Favoritos</h5>
+                        <h1 class="stats-number">♥</h1>
+                        <small class="text-secondary">Suas Listas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Stats Section End -->
+
+    <!-- Directors Section Start -->
+    <div class="container-fluid p-5">
+        <div class="mb-5 text-center wow fadeIn" data-wow-delay="0.1s">
+            <h5 class="section-title">Nossos Talentos</h5>
+            <h1 class="display-4 mb-0">Diretores em Destaque</h1>
+        </div>
+        {% if diretores_destaque %}
+            <div class="row g-4">
+                {% for diretor in diretores_destaque %}
+                    <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.{{ forloop.counter }}s">
+                        <div class="director-card text-center p-4">
+                            {% if diretor.foto %}
+                                <img src="{{ diretor.foto.url }}" alt="{{ diretor.nome }}" class="director-avatar mb-3">
+                            {% else %}
+                                <img src="https://via.placeholder.com/150x150?text=Sem+Foto" alt="Sem Foto" class="director-avatar mb-3">
+                            {% endif %}
+                            <h4 class="mb-3">{{ diretor.nome }}</h4>
+                            <p class="text-muted mb-3">Diretor de Cinema</p>
+                            <a href="{% url 'diretores:detalhar_diretor' diretor.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-2"></i>Ver Perfil
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <p class="text-muted">Nenhum diretor em destaque no momento.</p>
+            </div>
+        {% endif %}
+    </div>
+    <!-- Directors Section End -->
+
+
+
+
+{% endblock content %}

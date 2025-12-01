@@ -18,12 +18,12 @@ export default function Header() {
         <div className="col-lg-3 navbar-brand-bg d-none d-lg-block">
           <Link href="/" className="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
             <Image 
-              src="/img/logo.png" 
+              src="/logo.png" 
               alt="Logo Catálogo de Filmes" 
               width={200}
               height={60}
               className="img-fluid"
-              style={{ maxHeight: '60px', width: 'auto' }}
+              style={{ height: 'auto' }}
             />
           </Link>
         </div>
@@ -57,12 +57,12 @@ export default function Header() {
           <nav className="navbar navbar-expand-lg navbar-dark p-3 p-lg-0 px-lg-5" style={{ background: '#111111' }}>
             <Link href="/" className="navbar-brand d-block d-lg-none">
               <Image 
-                src="/img/logo.png" 
+                src="/logo.png" 
                 alt="Logo Catálogo de Filmes" 
                 width={150}
                 height={50}
                 className="img-fluid"
-                style={{ maxHeight: '60px', width: 'auto' }}
+                style={{ height: 'auto' }}
               />
             </Link>
             <button 

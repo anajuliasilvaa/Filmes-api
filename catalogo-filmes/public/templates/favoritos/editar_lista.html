@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-edit me-3"></i>
+                    Editar Lista de Favoritos
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    Atualize as informações da lista: <strong>"{{ lista.nome }}"</strong>
+                </p>
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                        <i class="fas fa-edit me-2"></i>Editar Coleção
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 class="mb-0">
+                            <i class="fas fa-list-ul me-2"></i>
+                            Atualizar Dados
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+                            
+                            <!-- Nome da Lista -->
+                            <div class="mb-4">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-tag me-2"></i>{{ form.nome.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-heart"></i>
+                                    </span>
+                                    {{ form.nome }}
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>{{ form.nome.help_text }}
+                                </small>
+                                {% if form.nome.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.nome.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Seleção de Filmes -->
+                            <div class="mb-4">
+                                <label for="{{ form.filmes.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-film me-2"></i>{{ form.filmes.label }}
+                                </label>
+                                <div class="filmes-selection">
+                                    <div class="selection-header">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>Selecione os filmes que deseja manter na lista
+                                        </small>
+                                    </div>
+                                    <div class="filmes-container">
+                                        {{ form.filmes }}
+                                    </div>
+                                </div>
+                                {% if form.filmes.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.filmes.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Informações adicionais -->
+                            <div class="info-box mb-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <i class="fas fa-user text-primary"></i>
+                                            <div>
+                                                <strong>Criador</strong>
+                                                <p class="text-muted mb-0">{{ lista.usuario.username }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <i class="fas fa-film text-primary"></i>
+                                            <div>
+                                                <strong>Filmes Atual</strong>
+                                                <p class="text-muted mb-0">{{ lista.filmes.count }} filme{{ lista.filmes.count|pluralize }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dicas -->
+                            <div class="tips-box mb-4">
+                                <h6 class="tips-title">
+                                    <i class="fas fa-lightbulb me-2"></i>Dicas para editar sua lista:
+                                </h6>
+                                <ul class="tips-list">
+                                    <li><strong>Nome:</strong> Atualize se quiser um nome mais descritivo</li>
+                                    <li><strong>Filmes:</strong> Adicione novos filmes ou remova os que não quer mais</li>
+                                    <li><strong>Organização:</strong> Mantenha a lista organizada por tema ou gênero</li>
+                                    <li><strong>Seleção:</strong> Use Ctrl+Click (Windows) ou Cmd+Click (Mac) para múltiplas seleções</li>
+                                    <li><strong>Flexibilidade:</strong> Você pode deixar a lista vazia se quiser recomeçar</li>
+                                </ul>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'favoritos:detalhes_lista' lista.id %}" class="btn btn-outline-secondary btn-lg me-md-2" style="border-radius: 25px;">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-warning btn-lg" style="border-radius: 25px; background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%); border: none; color: white;">
+                                    <i class="fas fa-save me-2"></i>Salvar Alterações
+                                </button>
+                            </div>
+    </form>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Estilização dos campos do formulário */
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 0 10px 10px 0;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background: #fff;
+    }
+
+    /* Input Groups */
+    .input-group-text {
+        border: 2px solid #e9ecef;
+        border-right: none;
+        border-radius: 10px 0 0 10px;
+        width: 50px;
+        justify-content: center;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    /* Filmes Selection */
+    .filmes-selection {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+
+    .filmes-selection:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .selection-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .filmes-container select {
+        width: 100%;
+        min-height: 200px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .filmes-container select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.1rem rgba(102, 126, 234, 0.25);
+    }
+
+    .filmes-container select option {
+        padding: 8px 12px;
+        background: #fff;
+        color: #495057;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .filmes-container select option:checked {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 500;
+    }
+
+    .filmes-container select option:hover {
+        background: #f8f9fa;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .info-item i {
+        font-size: 1.2rem;
+        width: 25px;
+        text-align: center;
+    }
+
+    .info-item strong {
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .info-item p {
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Tips Box */
+    .tips-box {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #ffc107;
+    }
+
+    .tips-title {
+        color: #856404;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .tips-list {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .tips-list li {
+        color: #6c5f00;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    /* Botões */
+    .btn {
+        padding: 12px 25px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+
+    /* Labels */
+    .form-label {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+
+    /* Validação */
+    .text-danger {
+        font-size: 0.875rem;
+    }
+
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    /* Animações */
+    .info-box, .tips-box {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 30px 20px !important;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+        }
+        
+        .info-box, .tips-box {
+            padding: 15px;
+        }
+        
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .info-item i {
+            width: auto;
+        }
+    }
+</style>
+
+<script>
+    // Validação em tempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const nomeInput = document.querySelector('#{{ form.nome.id_for_label }}');
+        const filmesSelect = document.querySelector('#{{ form.filmes.id_for_label }}');
+        
+        if (nomeInput) {
+            nomeInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+
+        // Contador de filmes selecionados
+        if (filmesSelect) {
+            const updateFilmesCounter = () => {
+                const selectedCount = filmesSelect.selectedOptions.length;
+                const headerText = document.querySelector('.selection-header small');
+                
+                if (selectedCount > 0) {
+                    headerText.innerHTML = `<i class="fas fa-check-circle me-1 text-success"></i>${selectedCount} filme${selectedCount > 1 ? 's' : ''} selecionado${selectedCount > 1 ? 's' : ''} na lista`;
+                } else {
+                    headerText.innerHTML = `<i class="fas fa-info-circle me-1"></i>Selecione os filmes que deseja manter na lista`;
+                }
+            };
+
+            filmesSelect.addEventListener('change', updateFilmesCounter);
+            
+            // Atualiza o contador inicial
+            updateFilmesCounter();
+        }
+    });
+
+    // Animação do botão de submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Salvando...';
+        submitBtn.disabled = true;
+        
+        // Se houver erro, restaura o botão
+        setTimeout(() => {
+            if (document.querySelector('.text-danger')) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }, 1000);
+    });
+</script>
+
+{% endblock content %}

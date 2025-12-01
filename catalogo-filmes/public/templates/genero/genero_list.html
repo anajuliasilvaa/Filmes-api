@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <!-- Hero Section Start -->
+    <div class="container-fluid hero-section d-flex align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container" >
+            <div class="row g-5 py-5">
+                <div class="col-12 text-center wow fadeIn" data-wow-delay="0.1s">
+                    <h1 class="display-2 text-white mb-4">Gêneros Cinematográficos</h1>
+                    <p class="lead text-white mb-4">Gerencie e organize os gêneros dos seus filmes</p>
+                    <i class="bi bi-tag animate-up-down text-white" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero Section End -->
+
+    <!-- Admin Controls -->
+    {% if user.groups.all %}
+        {% for group in user.groups.all %}
+            {% if group.name == 'Administradores' %}
+                <div class="container mt-4">
+                    <div class="admin-controls text-center wow fadeIn" data-wow-delay="0.1s">
+                        <h6 class="section-title mb-3">Gerenciar Gêneros</h6>
+                        <a href="{% url 'criar_genero' %}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>Novo Gênero
+                        </a>
+                        <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i>Voltar ao Catálogo
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats Section Start -->
+    <div class="container-fluid stats-section p-5 my-5">
+        <div class="row gx-5 gy-4 py-5 justify-content-center">
+            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.1s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-tags fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Total</h5>
+                        <h1 class="stats-number">{{ generos|length }}</h1>
+                        <small class="text-secondary">Gêneros Cadastrados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.2s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-film fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Filmes</h5>
+                        <h1 class="stats-number">∞</h1>
+                        <small class="text-secondary">Possibilidades</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.3s">
+                <div class="d-flex">
+                    <div class="stats-icon">
+                        <i class="fa fa-palette fs-4 text-primary"></i>
+                    </div>
+                    <div class="ps-4">
+                        <h5 class="text-white">Variedade</h5>
+                        <h1 class="stats-number">★</h1>
+                        <small class="text-secondary">Para Todos os Gostos</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Stats Section End -->
+
+    <!-- Genres Section Start -->
+    <div class="container-fluid p-5 bg-light">
+        <div class="mb-5 text-center wow fadeIn" data-wow-delay="0.1s">
+            <h5 class="section-title">Catálogo</h5>
+            <h1 class="display-4 mb-0">Gêneros Disponíveis</h1>
+        </div>
+        
+        {% if generos %}
+            <div class="row g-4">
+                {% for genero in generos %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 wow fadeIn" data-wow-delay="0.{{ forloop.counter }}s">
+                        <div class="genre-card" data-genre="{{ genero.nome }}">
+                            <div class="genre-icon">
+                                {% if genero.nome == "Ação" %}
+                                    <i class="fas fa-fist-raised"></i>
+                                {% elif genero.nome == "Drama" %}
+                                    <i class="fas fa-theater-masks"></i>
+                                {% elif genero.nome == "Comédia" %}
+                                    <i class="fas fa-laugh"></i>
+                                {% elif genero.nome == "Terror" %}
+                                    <i class="fas fa-ghost"></i>
+                                {% elif genero.nome == "Ficção Científica" %}
+                                    <i class="fas fa-rocket"></i>
+                                {% elif genero.nome == "Romance" %}
+                                    <i class="fas fa-heart"></i>
+                                {% elif genero.nome == "Documentário" %}
+                                    <i class="fas fa-video"></i>
+                                {% elif genero.nome == "Aventura" %}
+                                    <i class="fas fa-map"></i>
+                                {% elif genero.nome == "Animação" %}
+                                    <i class="fas fa-palette"></i>
+                                {% elif genero.nome == "Suspense" %}
+                                    <i class="fas fa-search"></i>
+                                {% elif genero.nome == "Musical" %}
+                                    <i class="fas fa-music"></i>
+                                {% elif genero.nome == "Fantasia" %}
+                                    <i class="fas fa-magic"></i>
+                                {% elif genero.nome == "Guerra" %}
+                                    <i class="fas fa-shield-alt"></i>
+                                {% elif genero.nome == "Western" %}
+                                    <i class="fas fa-hat-cowboy"></i>
+                                {% elif genero.nome == "Policial" %}
+                                    <i class="fas fa-user-secret"></i>
+                                {% elif genero.nome == "Biografia" %}
+                                    <i class="fas fa-user-circle"></i>
+                                {% elif genero.nome == "História" %}
+                                    <i class="fas fa-landmark"></i>
+                                {% elif genero.nome == "Esporte" %}
+                                    <i class="fas fa-running"></i>
+                                {% else %}
+                                    <i class="fas fa-film"></i>
+                                {% endif %}
+                            </div>
+                            <div class="genre-content">
+                                <h4 class="genre-title">{{ genero.nome }}</h4>
+                                <p class="genre-description">
+                                    {% if genero.nome == "Ação" %}
+                                        Filmes repletos de adrenalina, perseguições e aventuras emocionantes.
+                                    {% elif genero.nome == "Drama" %}
+                                        Histórias profundas que exploram emoções e conflitos humanos.
+                                    {% elif genero.nome == "Comédia" %}
+                                        Entretenimento garantido com humor e situações divertidas.
+                                    {% elif genero.nome == "Terror" %}
+                                        Filmes que desafiam seus medos e provocam calafrios.
+                                    {% elif genero.nome == "Ficção Científica" %}
+                                        Explore futuros possíveis e tecnologias imaginárias.
+                                    {% elif genero.nome == "Romance" %}
+                                        Histórias de amor que tocam o coração.
+                                    {% elif genero.nome == "Documentário" %}
+                                        Realidade capturada em narrativas verdadeiras.
+                                    {% elif genero.nome == "Aventura" %}
+                                        Jornadas épicas e descobertas extraordinárias.
+                                    {% elif genero.nome == "Animação" %}
+                                        Arte em movimento para todas as idades.
+                                    {% elif genero.nome == "Suspense" %}
+                                        Tensão e mistério que mantém você na expectativa.
+                                    {% elif genero.nome == "Musical" %}
+                                        Experiências envolventes com música e coreografia.
+                                    {% elif genero.nome == "Fantasia" %}
+                                        Mundos mágicos e criaturas extraordinárias.
+                                    {% elif genero.nome == "Guerra" %}
+                                        Épicos de conflitos e histórias de coragem.
+                                    {% elif genero.nome == "Western" %}
+                                        Aventuras no velho oeste americano.
+                                    {% elif genero.nome == "Policial" %}
+                                        Investigações criminais e mistérios urbanos.
+                                    {% elif genero.nome == "Biografia" %}
+                                        Vidas reais contadas com arte e precisão.
+                                    {% elif genero.nome == "História" %}
+                                        Eventos históricos que moldaram o mundo.
+                                    {% elif genero.nome == "Esporte" %}
+                                        Competições e histórias de superação atlética.
+                                    {% else %}
+                                        Um gênero único com suas próprias características especiais.
+                                    {% endif %}
+                                </p>
+                                <div class="genre-stats">
+                                    <span class="badge bg-primary">{{ genero.filmes.count }} filme{{ genero.filmes.count|pluralize:"s" }}</span>
+                                </div>
+                            </div>
+                            {% if user.groups.all %}
+                                {% for group in user.groups.all %}
+                                    {% if group.name == 'Administradores' %}
+                                        <div class="genre-actions">
+                                            <a href="{% url 'editar_genero' genero.pk %}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil me-1"></i>Editar
+                                            </a>
+                                            <a href="{% url 'deletar_genero' genero.pk %}" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash me-1"></i>Excluir
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-collection text-muted mb-3" style="font-size: 4rem;"></i>
+                <h3 class="text-muted">Nenhum gênero cadastrado</h3>
+                <p class="text-muted mb-4">Comece criando seu primeiro gênero cinematográfico.</p>
+                {% if user.groups.all %}
+                    {% for group in user.groups.all %}
+                        {% if group.name == 'Administradores' %}
+                            <a href="{% url 'criar_genero' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Criar Primeiro Gênero
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    <!-- Genres Section End -->
+
+{% endblock %}

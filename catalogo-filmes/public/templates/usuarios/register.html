@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row align-items-center justify-content-center text-center text-white py-5">
+            <div class="col-lg-8">
+                <div class="hero-content wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="fas fa-user-plus me-3" style="font-size: 3.5rem;"></i>
+                        <h1 class="display-4 fw-bold mb-0">Criar Conta</h1>
+                    </div>
+                    <p class="lead mb-4">Junte-se à nossa comunidade cinematográfica</p>
+                    <div class="d-inline-flex align-items-center bg-white bg-opacity-20 px-4 py-2 rounded-pill">
+                        <span style="color: black;">Acesso Gratuito</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+        <div class="position-absolute" style="top: 20%; left: 10%; animation: float 6s ease-in-out infinite;">
+            <i class="fas fa-film" style="font-size: 2rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 60%; right: 15%; animation: float 8s ease-in-out infinite delay-2s;">
+            <i class="fas fa-user-friends" style="font-size: 1.5rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 40%; left: 80%; animation: float 7s ease-in-out infinite delay-4s;">
+            <i class="fas fa-crown" style="font-size: 1.2rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 70%; left: 20%; animation: float 9s ease-in-out infinite delay-6s;">
+            <i class="fas fa-ticket-alt" style="font-size: 1.8rem;"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5" style="background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <!-- Register Card -->
+                <div class="card border-0 shadow-lg wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <!-- Card Header -->
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="text-white">
+                            <i class="fas fa-user-plus mb-2" style="font-size: 2rem;"></i>
+                            <h3 class="mb-1 fw-bold">Cadastro de Usuário</h3>
+                            <p class="mb-0 opacity-75">Crie sua conta em segundos</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-5">
+                        <!-- Benefits -->
+                        <div class="bg-light p-4 rounded-3 mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-gift text-success me-3 mt-1" style="font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-2">Benefícios da sua conta:</h6>
+                                    <ul class="list-unstyled mb-0 text-muted small">
+                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i>Criar listas personalizadas de favoritos</li>
+                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i>Avaliar e comentar filmes</li>
+                                        <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Acessar recomendações exclusivas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Messages -->
+{% if form.errors %}
+                        <div class="alert alert-danger border-0 shadow-sm mb-4 wow fadeInDown" data-wow-delay="0.4s" style="border-radius: 15px; border-left: 4px solid #dc3545;">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-2">Erro no Cadastro</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        {% for field, errors in form.errors.items %}
+                                            {% for error in errors %}
+                                                <li class="mb-1"><i class="fas fa-times text-danger me-2"></i>{{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+{% endif %}
+
+                        <!-- Registration Form -->
+                        <form action="{% url 'register' %}" method="post" novalidate>
+    {% csrf_token %}
+    
+                            <!-- Username Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.5s">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-user me-2 text-primary"></i>
+                                    Nome de Usuário
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </span>
+                                    <input type="text" name="username" id="{{ form.username.id_for_label }}" class="form-control" placeholder="Digite seu nome de usuário" required>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle text-info me-1"></i>
+                                    Escolha um nome único para identificar você
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.username.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+    </div>
+    
+                            <!-- Email Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.6s">
+                                <label for="email" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-envelope me-2 text-warning"></i>
+                                    Email
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    <input type="email" name="email" id="email" class="form-control" placeholder="Digite seu email" required>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-shield-alt text-success me-1"></i>
+                                    Usado para recuperação de senha e notificações
+                                </div>
+    </div>
+    
+                            <!-- Password Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.7s">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-lock me-2 text-success"></i>
+                                    Senha
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password" name="password1" id="{{ form.password1.id_for_label }}" class="form-control" placeholder="Digite sua senha" required>
+                                    <button type="button" class="btn btn-outline-secondary border-0 bg-light" onclick="togglePassword('{{ form.password1.id_for_label }}', 'toggleIcon1')">
+                                        <i id="toggleIcon1" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="password-strength">
+                                        <div class="d-flex justify-content-between small text-muted">
+                                            <span>Força da senha:</span>
+                                            <span id="strengthText">-</span>
+                                        </div>
+                                        <div class="progress mt-1" style="height: 6px;">
+                                            <div id="strengthBar" class="progress-bar" style="transition: all 0.3s;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.password1.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+    </div>
+    
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.8s">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-check-circle me-2 text-info"></i>
+                                    Confirmar Senha
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-check-circle text-muted"></i>
+                                    </span>
+                                    <input type="password" name="password2" id="{{ form.password2.id_for_label }}" class="form-control" placeholder="Confirme sua senha" required>
+                                    <button type="button" class="btn btn-outline-secondary border-0 bg-light" onclick="togglePassword('{{ form.password2.id_for_label }}', 'toggleIcon2')">
+                                        <i id="toggleIcon2" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMatch" class="mt-1" style="display: none;">
+                                    <small class="text-muted">
+                                        <i id="matchIcon" class="me-1"></i>
+                                        <span id="matchText"></span>
+                                    </small>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.password2.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+    </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-4 wow fadeInUp" data-wow-delay="0.9s">
+                                <button type="submit" class="btn btn-lg py-3 fw-bold text-white" 
+                                        style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; border-radius: 15px; transition: all 0.3s ease;"
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(40, 167, 69, 0.3)'"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Criar Minha Conta
+                                </button>
+    </div>
+                            
+    <input type="hidden" name="next" value="{% url 'index' %}">
+</form>
+
+                        <!-- Additional Options -->
+                        <div class="text-center pt-3 border-top">
+                            <div class="row g-3">
+                                <div class="col-12 wow fadeInUp" data-wow-delay="1.0s">
+                                    <a href="{% url 'login' %}" class="text-decoration-none">
+                                        <div class="d-flex align-items-center justify-content-center p-3 bg-light rounded-3 hover-card">
+                                            <i class="fas fa-sign-in-alt me-3 text-primary" style="font-size: 1.2rem;"></i>
+                                            <div class="text-start">
+                                                <h6 class="mb-0 fw-bold text-dark">Já tem uma conta?</h6>
+                                                <small class="text-muted">Faça login aqui</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-12 wow fadeInUp" data-wow-delay="1.1s">
+                                    <a href="{% url 'index' %}" class="text-decoration-none">
+                                        <div class="d-flex align-items-center justify-content-center p-3 bg-light rounded-3 hover-card">
+                                            <i class="fas fa-home me-3 text-success" style="font-size: 1.2rem;"></i>
+                                            <div class="text-start">
+                                                <h6 class="mb-0 fw-bold text-dark">Explorar sem conta</h6>
+                                                <small class="text-muted">Voltar ao catálogo</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Info -->
+                <div class="card border-0 bg-info bg-opacity-10 mt-4 wow fadeInUp" data-wow-delay="1.2s" style="border-radius: 15px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-shield-alt text-info me-3 mt-1" style="font-size: 1.3rem;"></i>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-2">Compromisso com sua Privacidade</h6>
+                                <p class="mb-0 text-muted small">
+                                    Seus dados são protegidos e nunca compartilhados. Utilizamos criptografia 
+                                    avançada e seguimos as melhores práticas de segurança.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="text-center mt-4 wow fadeInUp" data-wow-delay="1.3s">
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-users d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Comunidade</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-film d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Catálogo</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-star d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Avaliações</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hover-card:hover {
+    background-color: #e9ecef !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background-color: #fff;
+}
+
+.input-group-text {
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #e9ecef;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.input-group .btn {
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+}
+
+.alert {
+    border-left: 4px solid #dc3545;
+}
+
+.password-strength .progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+}
+
+.form-text {
+    color: #6c757d !important;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .card-body {
+        padding: 2rem !important;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group-text,
+    .input-group .form-control,
+    .input-group .btn {
+        border-radius: 10px !important;
+        border: 1px solid #e9ecef !important;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+<script>
+function togglePassword(fieldId, iconId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(iconId);
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let text = '';
+    let color = '';
+    
+    // Length check
+    if (password.length >= 8) strength += 25;
+    
+    // Lowercase check
+    if (/[a-z]/.test(password)) strength += 25;
+    
+    // Uppercase check
+    if (/[A-Z]/.test(password)) strength += 25;
+    
+    // Number/Symbol check
+    if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength += 25;
+    
+    if (strength === 0) {
+        text = '-';
+        color = '#e9ecef';
+    } else if (strength <= 25) {
+        text = 'Fraca';
+        color = '#dc3545';
+    } else if (strength <= 50) {
+        text = 'Regular';
+        color = '#ffc107';
+    } else if (strength <= 75) {
+        text = 'Boa';
+        color = '#fd7e14';
+    } else {
+        text = 'Forte';
+        color = '#28a745';
+    }
+    
+    return { strength, text, color };
+}
+
+// Password match checker
+function checkPasswordMatch(password1, password2) {
+    const matchDiv = document.getElementById('passwordMatch');
+    const matchIcon = document.getElementById('matchIcon');
+    const matchText = document.getElementById('matchText');
+    
+    if (password2.length === 0) {
+        matchDiv.style.display = 'none';
+        return;
+    }
+    
+    matchDiv.style.display = 'block';
+    
+    if (password1 === password2) {
+        matchIcon.className = 'fas fa-check text-success me-1';
+        matchText.textContent = 'Senhas coincidem';
+        matchText.className = 'text-success';
+    } else {
+        matchIcon.className = 'fas fa-times text-danger me-1';
+        matchText.textContent = 'Senhas não coincidem';
+        matchText.className = 'text-danger';
+    }
+}
+
+// Email validation
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Form validation and feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const usernameInput = document.getElementById('{{ form.username.id_for_label }}');
+    const emailInput = document.getElementById('email');
+    const password1Input = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2Input = document.getElementById('{{ form.password2.id_for_label }}');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    // Username validation
+    usernameInput.addEventListener('input', function() {
+        this.classList.remove('is-invalid', 'is-valid');
+        if (this.value.length >= 3) {
+            this.classList.add('is-valid');
+        } else if (this.value.length > 0) {
+            this.classList.add('is-invalid');
+        }
+    });
+    
+    // Email validation
+    emailInput.addEventListener('input', function() {
+        this.classList.remove('is-invalid', 'is-valid');
+        
+        if (this.value.trim() !== '') {
+            if (isValidEmail(this.value)) {
+                this.classList.add('is-valid');
+            } else {
+                this.classList.add('is-invalid');
+            }
+        }
+    });
+    
+    // Password strength checker
+    password1Input.addEventListener('input', function() {
+        const result = checkPasswordStrength(this.value);
+        strengthBar.style.width = result.strength + '%';
+        strengthBar.style.backgroundColor = result.color;
+        strengthText.textContent = result.text;
+        strengthText.style.color = result.color;
+        
+        // Check match if second password exists
+        if (password2Input.value.length > 0) {
+            checkPasswordMatch(this.value, password2Input.value);
+        }
+    });
+    
+    // Password match checker
+    password2Input.addEventListener('input', function() {
+        checkPasswordMatch(password1Input.value, this.value);
+    });
+    
+    // Form submission enhancement
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        
+        // Add loading state
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Criando conta...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock content %}

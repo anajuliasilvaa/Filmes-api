@@ -1,0 +1,440 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row align-items-center justify-content-center text-center text-white py-5">
+            <div class="col-lg-8">
+                <div class="hero-content wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="fas fa-shield-alt me-3" style="font-size: 3.5rem;"></i>
+                        <h1 class="display-4 fw-bold mb-0">Alterar Senha</h1>
+                    </div>
+                    <p class="lead mb-4">Mantenha sua conta segura com uma nova senha</p>
+                    <div class="d-inline-flex align-items-center bg-white bg-opacity-20 px-4 py-2 rounded-pill">
+                        <i class="fas fa-lock me-2"></i>
+                        <span>Segurança da Conta</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+        <div class="position-absolute" style="top: 20%; left: 10%; animation: float 6s ease-in-out infinite;">
+            <i class="fas fa-key" style="font-size: 2rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 60%; right: 15%; animation: float 8s ease-in-out infinite delay-2s;">
+            <i class="fas fa-shield-alt" style="font-size: 1.5rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 40%; left: 80%; animation: float 7s ease-in-out infinite delay-4s;">
+            <i class="fas fa-user-lock" style="font-size: 1.2rem;"></i>
+        </div>
+        <div class="position-absolute" style="top: 70%; left: 20%; animation: float 9s ease-in-out infinite delay-6s;">
+            <i class="fas fa-fingerprint" style="font-size: 1.8rem;"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5" style="background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <!-- Password Change Card -->
+                <div class="card border-0 shadow-lg wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <!-- Card Header -->
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="text-white">
+                            <i class="fas fa-shield-alt mb-2" style="font-size: 2rem;"></i>
+                            <h3 class="mb-1 fw-bold">Alterar Senha</h3>
+                            <p class="mb-0 opacity-75">Defina uma nova senha para sua conta</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-5">
+                        <!-- Error Messages -->
+                        {% if form.errors %}
+                        <div class="alert alert-danger border-0 shadow-sm mb-4 wow fadeInDown" data-wow-delay="0.3s" style="border-radius: 15px; border-left: 4px solid #dc3545;">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-2">Erro na Alteração de Senha</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        {% for field, errors in form.errors.items %}
+                                            {% for error in errors %}
+                                                <li class="mb-1"><i class="fas fa-times text-danger me-2"></i>{{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Security Tips -->
+                        <div class="bg-light p-4 rounded-3 mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-lightbulb text-warning me-3 mt-1" style="font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-2">Dicas de Segurança:</h6>
+                                    <ul class="list-unstyled mb-0 text-muted small">
+                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i>Use pelo menos 8 caracteres</li>
+                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i>Combine letras, números e símbolos</li>
+                                        <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Evite informações pessoais óbvias</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Password Change Form -->
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Current Password Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.4s">
+                                <label for="{{ form.old_password.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-lock me-2 text-primary"></i>
+                                    Senha Atual
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="{{ form.old_password.id_for_label }}" name="{{ form.old_password.name }}" placeholder="Digite sua senha atual" required>
+                                    <button type="button" class="btn btn-outline-secondary border-0 bg-light" onclick="togglePassword('{{ form.old_password.id_for_label }}', 'toggleIcon1')">
+                                        <i id="toggleIcon1" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.old_password.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.old_password.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- New Password Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.5s">
+                                <label for="{{ form.new_password1.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-key me-2 text-success"></i>
+                                    Nova Senha
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-key text-muted"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="{{ form.new_password1.id_for_label }}" name="{{ form.new_password1.name }}" placeholder="Digite sua nova senha" required>
+                                    <button type="button" class="btn btn-outline-secondary border-0 bg-light" onclick="togglePassword('{{ form.new_password1.id_for_label }}', 'toggleIcon2')">
+                                        <i id="toggleIcon2" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="password-strength">
+                                        <div class="d-flex justify-content-between small text-muted">
+                                            <span>Força da senha:</span>
+                                            <span id="strengthText">-</span>
+                                        </div>
+                                        <div class="progress mt-1" style="height: 6px;">
+                                            <div id="strengthBar" class="progress-bar" style="transition: all 0.3s;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if form.new_password1.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.new_password1.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Confirm New Password Field -->
+                            <div class="mb-4 wow fadeInUp" data-wow-delay="0.6s">
+                                <label for="{{ form.new_password2.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-check-circle me-2 text-info"></i>
+                                    Confirmar Nova Senha
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">
+                                        <i class="fas fa-check-circle text-muted"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="{{ form.new_password2.id_for_label }}" name="{{ form.new_password2.name }}" placeholder="Digite novamente a nova senha" required>
+                                    <button type="button" class="btn btn-outline-secondary border-0 bg-light" onclick="togglePassword('{{ form.new_password2.id_for_label }}', 'toggleIcon3')">
+                                        <i id="toggleIcon3" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMatch" class="mt-1" style="display: none;">
+                                    <small class="text-muted">
+                                        <i id="matchIcon" class="me-1"></i>
+                                        <span id="matchText"></span>
+                                    </small>
+                                </div>
+                                {% if form.new_password2.errors %}
+                                    <div class="text-danger mt-1">
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ form.new_password2.errors.0 }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-4 wow fadeInUp" data-wow-delay="0.7s">
+                                <button type="submit" class="btn btn-lg py-3 fw-bold text-white" 
+                                        style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; border-radius: 15px; transition: all 0.3s ease;"
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(40, 167, 69, 0.3)'"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Alterar Senha
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Back to Profile -->
+                        <div class="text-center pt-3 border-top wow fadeInUp" data-wow-delay="0.8s">
+                            <a href="{% url 'perfil' %}" class="text-decoration-none">
+                                <div class="d-flex align-items-center justify-content-center p-3 bg-light rounded-3 hover-card">
+                                    <i class="fas fa-user me-3 text-primary" style="font-size: 1.2rem;"></i>
+                                    <div class="text-start">
+                                        <h6 class="mb-0 fw-bold text-dark">Voltar ao Perfil</h6>
+                                        <small class="text-muted">Gerenciar conta</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Info -->
+                <div class="text-center mt-4 wow fadeInUp" data-wow-delay="0.9s">
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-shield-alt d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Segurança</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-lock d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Privacidade</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted">
+                                <i class="fas fa-key d-block mb-1" style="font-size: 1.5rem;"></i>
+                                <small>Proteção</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hover-card:hover {
+    background-color: #e9ecef !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background-color: #fff;
+}
+
+.input-group-text {
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #e9ecef;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.input-group .btn {
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+}
+
+.alert {
+    border-left: 4px solid #dc3545;
+}
+
+.password-strength .progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .card-body {
+        padding: 2rem !important;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group-text,
+    .input-group .form-control,
+    .input-group .btn {
+        border-radius: 10px !important;
+        border: 1px solid #e9ecef !important;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+<script>
+function togglePassword(fieldId, iconId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(iconId);
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let text = '';
+    let color = '';
+    
+    // Length check
+    if (password.length >= 8) strength += 25;
+    
+    // Lowercase check
+    if (/[a-z]/.test(password)) strength += 25;
+    
+    // Uppercase check
+    if (/[A-Z]/.test(password)) strength += 25;
+    
+    // Number/Symbol check
+    if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength += 25;
+    
+    if (strength === 0) {
+        text = '-';
+        color = '#e9ecef';
+    } else if (strength <= 25) {
+        text = 'Fraca';
+        color = '#dc3545';
+    } else if (strength <= 50) {
+        text = 'Regular';
+        color = '#ffc107';
+    } else if (strength <= 75) {
+        text = 'Boa';
+        color = '#fd7e14';
+    } else {
+        text = 'Forte';
+        color = '#28a745';
+    }
+    
+    return { strength, text, color };
+}
+
+// Password match checker
+function checkPasswordMatch(password1, password2) {
+    const matchDiv = document.getElementById('passwordMatch');
+    const matchIcon = document.getElementById('matchIcon');
+    const matchText = document.getElementById('matchText');
+    
+    if (password2.length === 0) {
+        matchDiv.style.display = 'none';
+        return;
+    }
+    
+    matchDiv.style.display = 'block';
+    
+    if (password1 === password2) {
+        matchIcon.className = 'fas fa-check text-success me-1';
+        matchText.textContent = 'Senhas coincidem';
+        matchText.className = 'text-success';
+    } else {
+        matchIcon.className = 'fas fa-times text-danger me-1';
+        matchText.textContent = 'Senhas não coincidem';
+        matchText.className = 'text-danger';
+    }
+}
+
+// Form validation and feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const newPassword1 = document.getElementById('{{ form.new_password1.id_for_label }}');
+    const newPassword2 = document.getElementById('{{ form.new_password2.id_for_label }}');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    // Password strength checker
+    newPassword1.addEventListener('input', function() {
+        const result = checkPasswordStrength(this.value);
+        strengthBar.style.width = result.strength + '%';
+        strengthBar.style.backgroundColor = result.color;
+        strengthText.textContent = result.text;
+        strengthText.style.color = result.color;
+        
+        // Check match if second password exists
+        if (newPassword2.value.length > 0) {
+            checkPasswordMatch(this.value, newPassword2.value);
+        }
+    });
+    
+    // Password match checker
+    newPassword2.addEventListener('input', function() {
+        checkPasswordMatch(newPassword1.value, this.value);
+    });
+    
+    // General form validation
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() !== '') {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            this.classList.remove('is-invalid', 'is-valid');
+        });
+    });
+});
+</script>
+{% endblock content %} 

@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-heart-circle me-3"></i>
+                    Criar Lista de Favoritos
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    Organize seus filmes favoritos em uma nova coleção personalizada
+                </p>
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                        <i class="fas fa-plus me-2"></i>Nova Coleção
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 wow fadeInUp" data-wow-delay="0.2s" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h3 class="mb-0">
+                            <i class="fas fa-list-ul me-2"></i>
+                            Dados da Lista
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Nome da Lista -->
+                            <div class="mb-4">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-tag me-2"></i>{{ form.nome.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                                        <i class="fas fa-heart"></i>
+                                    </span>
+                                    {{ form.nome }}
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>{{ form.nome.help_text }}
+                                </small>
+                                {% if form.nome.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.nome.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Seleção de Filmes -->
+                            <div class="mb-4">
+                                <label for="{{ form.filmes.id_for_label }}" class="form-label fw-bold text-muted">
+                                    <i class="fas fa-film me-2"></i>{{ form.filmes.label }}
+                                </label>
+                                <div class="filmes-selection">
+                                    <div class="selection-header">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>Selecione os filmes que deseja adicionar à lista (opcional)
+                                        </small>
+                                    </div>
+                                    <div class="filmes-container">
+                                        {{ form.filmes }}
+                                    </div>
+                                </div>
+                                {% if form.filmes.errors %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.filmes.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Informações adicionais -->
+                            <div class="info-box mb-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <i class="fas fa-user text-primary"></i>
+                                            <div>
+                                                <strong>Criador</strong>
+                                                <p class="text-muted mb-0">{{ user.username }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <i class="fas fa-film text-primary"></i>
+                                            <div>
+                                                <strong>Filmes</strong>
+                                                <p class="text-muted mb-0">Selecionados acima</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dicas -->
+                            <div class="tips-box mb-4">
+                                <h6 class="tips-title">
+                                    <i class="fas fa-lightbulb me-2"></i>Dicas para criar sua lista:
+                                </h6>
+                                <ul class="tips-list">
+                                    <li><strong>Nome:</strong> Use nomes descritivos como "Melhores de 2024" ou "Clássicos Imperdíveis"</li>
+                                    <li><strong>Organização:</strong> Agrupe por gênero: "Filmes de Ação Favoritos"</li>
+                                    <li><strong>Temática:</strong> Crie listas para ocasiões: "Para Assistir nas Férias"</li>
+                                    <li><strong>Filmes:</strong> Você pode adicionar filmes agora ou deixar a lista vazia e adicionar depois</li>
+                                    <li><strong>Criatividade:</strong> Seja único: "Filmes que me fizeram chorar"</li>
+                                </ul>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'favoritos:minhas_listas' %}" class="btn btn-outline-secondary btn-lg me-md-2" style="border-radius: 25px;">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success btn-lg" style="border-radius: 25px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none;">
+                                    <i class="fas fa-save me-2"></i>Criar Lista
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Estilização dos campos do formulário */
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 0 10px 10px 0;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background: #fff;
+    }
+
+    /* Input Groups */
+    .input-group-text {
+        border: 2px solid #e9ecef;
+        border-right: none;
+        border-radius: 10px 0 0 10px;
+        width: 50px;
+        justify-content: center;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    /* Filmes Selection */
+    .filmes-selection {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+
+    .filmes-selection:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .selection-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .filmes-container select {
+        width: 100%;
+        min-height: 200px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .filmes-container select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.1rem rgba(102, 126, 234, 0.25);
+    }
+
+    .filmes-container select option {
+        padding: 8px 12px;
+        background: #fff;
+        color: #495057;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .filmes-container select option:checked {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 500;
+    }
+
+    .filmes-container select option:hover {
+        background: #f8f9fa;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .info-item i {
+        font-size: 1.2rem;
+        width: 25px;
+        text-align: center;
+    }
+
+    .info-item strong {
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .info-item p {
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Tips Box */
+    .tips-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #bbdefb;
+    }
+
+    .tips-title {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .tips-list {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .tips-list li {
+        color: #5a6c7d;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    /* Botões */
+    .btn {
+        padding: 12px 25px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+
+    /* Labels */
+    .form-label {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+
+    /* Validação */
+    .text-danger {
+        font-size: 0.875rem;
+    }
+
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    /* Animações */
+    .info-box, .tips-box {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 30px 20px !important;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+        }
+        
+        .info-box, .tips-box {
+            padding: 15px;
+        }
+        
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .info-item i {
+            width: auto;
+        }
+    }
+</style>
+
+<script>
+    // Validação em tempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const nomeInput = document.querySelector('#{{ form.nome.id_for_label }}');
+        const filmesSelect = document.querySelector('#{{ form.filmes.id_for_label }}');
+        
+        if (nomeInput) {
+            nomeInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+
+        // Contador de filmes selecionados
+        if (filmesSelect) {
+            const updateFilmesCounter = () => {
+                const selectedCount = filmesSelect.selectedOptions.length;
+                const headerText = document.querySelector('.selection-header small');
+                
+                if (selectedCount > 0) {
+                    headerText.innerHTML = `<i class="fas fa-check-circle me-1 text-success"></i>${selectedCount} filme${selectedCount > 1 ? 's' : ''} selecionado${selectedCount > 1 ? 's' : ''} para a lista`;
+                } else {
+                    headerText.innerHTML = `<i class="fas fa-info-circle me-1"></i>Selecione os filmes que deseja adicionar à lista (opcional)`;
+                }
+            };
+
+            filmesSelect.addEventListener('change', updateFilmesCounter);
+            
+            // Atualiza o contador inicial
+            updateFilmesCounter();
+        }
+    });
+
+    // Animação do botão de submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Criando...';
+        submitBtn.disabled = true;
+        
+        // Se houver erro, restaura o botão
+        setTimeout(() => {
+            if (document.querySelector('.text-danger')) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }, 1000);
+    });
+</script>
+
+{% endblock content %}

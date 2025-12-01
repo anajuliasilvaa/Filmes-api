@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section text-center text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 40vh; position: relative;">
+    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <i class="fas fa-heart me-3"></i>
+                    Minhas Listas de Favoritos
+                </h1>
+                <p class="lead mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                    Organize e gerencie suas coleções de filmes favoritos
+                </p>
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                        <i class="fas fa-list me-2"></i>{{ listas|length }} Lista{{ listas|length|pluralize }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Controls Section -->
+<div class="container mt-4">
+    <div class="admin-controls text-center wow fadeIn" data-wow-delay="0.1s">
+        <h6 class="section-title mb-3">Gerenciar Listas</h6>
+        <a href="{% url 'favoritos:criar_lista' %}" class="btn btn-success btn-sm">
+            <i class="fas fa-plus-circle me-1"></i>Nova Lista
+        </a>
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Voltar ao Catálogo
+        </a>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="container-fluid stats-section p-5 my-5">
+    <div class="row gx-5 gy-4 py-5 justify-content-center">
+        <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.1s">
+            <div class="d-flex">
+                <div class="stats-icon">
+                    <i class="fa fa-list fs-4 text-primary"></i>
+                </div>
+                <div class="ps-4">
+                    <h5 class="text-white">Total</h5>
+                    <h1 class="stats-number">{{ listas|length }}</h1>
+                    <small class="text-secondary">Lista{{ listas|length|pluralize }} Criada{{ listas|length|pluralize }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.2s">
+            <div class="d-flex">
+                <div class="stats-icon">
+                    <i class="fa fa-heart fs-4 text-primary"></i>
+                </div>
+                <div class="ps-4">
+                    <h5 class="text-white">Favoritos</h5>
+                    <h1 class="stats-number">♥</h1>
+                    <small class="text-secondary">Suas Coleções</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lists Section -->
+<div class="container-fluid p-5 bg-light">
+    <div class="mb-5 text-center wow fadeIn" data-wow-delay="0.1s">
+        <h5 class="section-title">Suas Coleções</h5>
+        <h1 class="display-4 mb-0">Listas de Favoritos</h1>
+    </div>
+    
+    {% if listas %}
+        <div class="row g-4">
+            {% for lista in object_list %}
+                <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-delay="0.{{ forloop.counter }}s">
+                    <div class="lista-card">
+                        <div class="lista-header">
+                            <div class="lista-icon">
+                                <i class="fas fa-heart text-danger"></i>
+                            </div>
+                            <div class="lista-count">
+                                <span class="badge bg-primary">{{ lista.filmes.count }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="lista-body">
+                            <h4 class="lista-title">{{ lista.nome }}</h4>
+                            <div class="lista-meta">
+                                <small class="text-muted">
+                                    <i class="fas fa-film me-1"></i>
+                                    {{ lista.filmes.count }} filme{{ lista.filmes.count|pluralize }}
+                                </small>
+                            </div>
+                            
+                            <!-- Mini preview dos filmes -->
+                            {% if lista.filmes.all %}
+                                <div class="lista-preview">
+                                    {% for filme in lista.filmes.all|slice:":3" %}
+                                        {% if filme.poster %}
+                                            <img src="{{ filme.poster.url }}" alt="{{ filme.titulo }}" class="preview-poster">
+                                        {% else %}
+                                            <div class="preview-poster preview-placeholder">
+                                                <i class="fas fa-film"></i>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if lista.filmes.count > 3 %}
+                                        <div class="preview-more">
+                                            <span>+{{ lista.filmes.count|add:"-3" }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- <div class="lista-footer">
+                            <a href="{% url 'favoritos:detalhes_lista' lista.id %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Ver Lista
+                            </a>
+                        </div>
+                         -->
+                        <!-- Overlay para hover -->
+                        <div class="lista-overlay">
+                            <div class="overlay-content">
+                                <a href="{% url 'favoritos:detalhes_lista' lista.id %}" class="btn btn-light btn-lg">
+                                    <i class="fas fa-heart me-2"></i>Abrir Lista
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-heart-broken text-muted mb-3" style="font-size: 4rem;"></i>
+                <h3 class="text-muted mb-3">Nenhuma lista criada ainda</h3>
+                <p class="text-muted mb-4">Comece criando sua primeira lista de filmes favoritos</p>
+                <a href="{% url 'favoritos:criar_lista' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Criar Primeira Lista
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .lista-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 15px; /* Espaço para o badge */
+    }
+
+    .lista-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .lista-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .lista-icon {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .lista-count {
+        position: absolute;
+        right: 15px;
+        background: #fff;
+        border-radius: 50%;
+        padding: 3px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+    }
+
+    .lista-count .badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .lista-body {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .lista-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .lista-meta {
+        margin-bottom: 15px;
+    }
+
+    .lista-preview {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: auto;
+        flex-wrap: wrap;
+    }
+
+    .preview-poster {
+        width: 35px;
+        height: 50px;
+        border-radius: 5px;
+        object-fit: cover;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .preview-placeholder {
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+
+    .preview-more {
+        width: 35px;
+        height: 50px;
+        background: #e9ecef;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .lista-footer {
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid #f8f9fa;
+    }
+
+    .lista-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .lista-card:hover .lista-overlay {
+        opacity: 1;
+    }
+
+    .overlay-content .btn {
+        border-radius: 25px;
+        padding: 12px 25px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .overlay-content .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .empty-state {
+        background: #fff;
+        border-radius: 20px;
+        padding: 60px 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-state .btn {
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .empty-state .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .lista-card {
+            margin-bottom: 20px;
+        }
+        
+        .lista-header {
+            padding: 15px;
+        }
+        
+        .lista-body {
+            padding: 15px;
+        }
+        
+        .lista-footer {
+            padding: 15px;
+        }
+        
+        .preview-poster {
+            width: 30px;
+            height: 40px;
+        }
+        
+        .preview-more {
+            width: 30px;
+            height: 40px;
+        }
+        
+        .empty-state {
+            padding: 40px 20px;
+        }
+    }
+</style>
+
+{% endblock content %}
