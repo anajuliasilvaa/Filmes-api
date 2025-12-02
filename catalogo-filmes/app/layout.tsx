@@ -45,7 +45,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={inter.className}>
+      {/* AQUI ESTÁ A CORREÇÃO: suppressHydrationWarning={true} */}
+      <body className={inter.className} suppressHydrationWarning={true}>
         <AuthProvider>
           <Header />
           
@@ -61,6 +62,7 @@ export default function RootLayout({
           </a>
 
           {/* JavaScript Libraries */}
+          {/* jQuery carrega antes para estar disponível */}
           <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js" strategy="beforeInteractive" />
           <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" strategy="beforeInteractive" />
           <Script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" strategy="afterInteractive" />
@@ -68,34 +70,38 @@ export default function RootLayout({
           {/* Custom Scripts */}
           <Script id="custom-scripts" strategy="afterInteractive">
             {`
-              // Back to top button
-              $(window).scroll(function () {
-                if ($(this).scrollTop() > 100) {
-                  $('.back-to-top').fadeIn('slow');
-                } else {
-                  $('.back-to-top').fadeOut('slow');
-                }
-              });
-              $('.back-to-top').click(function () {
-                $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
-                return false;
-              });
-              
-              // Active navbar link
-              $(document).ready(function() {
-                var currentPath = window.location.pathname;
-                $('.navbar-nav .nav-link').each(function() {
-                  var linkPath = $(this).attr('href');
-                  if (linkPath === currentPath) {
-                    $(this).addClass('active');
+              // Back to top button logic
+              if (typeof $ !== 'undefined') {
+                $(window).scroll(function () {
+                  if ($(this).scrollTop() > 100) {
+                    $('.back-to-top').fadeIn('slow');
                   } else {
-                    $(this).removeClass('active');
+                    $('.back-to-top').fadeOut('slow');
                   }
                 });
+                $('.back-to-top').click(function () {
+                  $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+                  return false;
+                });
                 
-                // Initialize WOW.js animations
-                new WOW().init();
-              });
+                // Active navbar link & WOW init
+                $(document).ready(function() {
+                  var currentPath = window.location.pathname;
+                  $('.navbar-nav .nav-link').each(function() {
+                    var linkPath = $(this).attr('href');
+                    if (linkPath === currentPath) {
+                      $(this).addClass('active');
+                    } else {
+                      $(this).removeClass('active');
+                    }
+                  });
+                  
+                  // Initialize WOW.js if available
+                  if (typeof WOW !== 'undefined') {
+                    new WOW().init();
+                  }
+                });
+              }
             `}
           </Script>
         </AuthProvider>

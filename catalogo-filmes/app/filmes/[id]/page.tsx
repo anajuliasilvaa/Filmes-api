@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { filmesAPI } from '@/lib/api';
+import AvaliacoesSection from '@/components/AvaliacoesSection';
 
 interface Genero {
   id: number;
@@ -16,6 +17,8 @@ interface Diretor {
   nome: string;
 }
 
+// Interface Avaliacao pode ser simplificada aqui se não for usada fora do componente, 
+// mas mantivemos para compatibilidade com o tipo Filme
 interface Avaliacao {
   id: number;
   usuario: {
@@ -213,58 +216,10 @@ export default function FilmeDetailPage() {
                 </div>
               </div>
 
-              {/* Avaliações */}
-              <div className="card shadow-lg border-0 mb-4" style={{ borderRadius: '20px' }}>
-                <div className="card-header py-3 d-flex justify-content-between align-items-center" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', borderRadius: '20px 20px 0 0' }}>
-                  <h5 className="mb-0">
-                    <i className="fas fa-star me-2"></i>Avaliações
-                  </h5>
-                  {user && (
-                    <Link href={`/filmes/${filme.id}/avaliar`} className="btn btn-light btn-sm" style={{ borderRadius: '20px' }}>
-                      <i className="fas fa-plus me-1"></i>Adicionar
-                    </Link>
-                  )}
-                </div>
-                <div className="card-body p-4">
-                  <div className="avaliacoes-container" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                    {filme.avaliacoes && filme.avaliacoes.length > 0 ? (
-                      filme.avaliacoes.map((avaliacao) => (
-                        <div key={avaliacao.id} className="mb-4 p-3 bg-light rounded-3">
-                          <div className="d-flex justify-content-between align-items-start mb-2">
-                            <div className="d-flex align-items-center">
-                              <div className="avatar-circle me-3" style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
-                                {avaliacao.usuario.username[0].toUpperCase()}
-                              </div>
-                              <div>
-                                <h6 className="mb-0">{avaliacao.usuario.username}</h6>
-                                <div className="text-warning">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <i key={star} className={star <= avaliacao.nota ? 'fas fa-star' : 'far fa-star'}></i>
-                                  ))}
-                                  <span className="ms-2 text-muted">({avaliacao.nota}/5)</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="mb-0 text-muted">{avaliacao.comentario}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-4">
-                        <i className="fas fa-star-half-alt text-muted fa-3x mb-3"></i>
-                        <p className="text-muted">Este filme ainda não tem avaliações.</p>
-                        {user && (
-                          <Link href={`/filmes/${filme.id}/avaliar`} className="btn btn-outline-primary" style={{ borderRadius: '20px' }}>
-                            <i className="fas fa-plus me-2"></i>Seja o primeiro a avaliar
-                          </Link>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              {/* AQUI ESTÁ A MUDANÇA: COMPONENTE DE AVALIAÇÕES INSERIDO */}
+              <AvaliacoesSection filmeId={filme.id} />
 
-              {/* Ações */}
+              {/* Ações (Botões) */}
               <div className="card shadow-lg border-0" style={{ borderRadius: '20px' }}>
                 <div className="card-body p-4">
                   <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -332,10 +287,6 @@ export default function FilmeDetailPage() {
           
           .display-4 {
             font-size: 2rem;
-          }
-          
-          .avaliacoes-container {
-            max-height: 300px;
           }
         }
       `}</style>

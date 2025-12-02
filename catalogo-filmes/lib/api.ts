@@ -311,11 +311,32 @@ export const generosAPI = {
     if (!response.ok) throw new Error('Erro ao buscar gêneros');
     return response.json();
   },
-};
 
-// ==============================================
-// SEÇÃO AJUSTADA COM OS SEUS CRUDS
-// ==============================================
+  async create(nome: string) {
+    const response = await fetchWithAuth('/api/v1/generos/', {
+      method: 'POST',
+      body: JSON.stringify({ nome }),
+    });
+    if (!response.ok) throw new Error('Erro ao criar gênero');
+    return response.json();
+  },
+
+  async update(id: number, nome: string) {
+    const response = await fetchWithAuth(`/api/v1/generos/${id}/`, {
+      method: 'PUT', // ou PATCH
+      body: JSON.stringify({ nome }),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar gênero');
+    return response.json();
+  },
+
+  async delete(id: number) {
+    const response = await fetchWithAuth(`/api/v1/generos/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar gênero');
+  },
+};
 
 // API de Diretores
 export const diretoresAPI = {
@@ -407,6 +428,11 @@ export default {
 };
 
 // API de Avaliações
+// Em lib/api.ts
+
+// ... (Mantenha o resto do arquivo igual: authAPI, filmesAPI, generosAPI...)
+
+// API de Avaliações (CORRIGIDA)
 export const avaliacoesAPI = {
   async list() {
     const response = await fetchWithAuth('/api/v1/avaliacoes/');
@@ -414,18 +440,28 @@ export const avaliacoesAPI = {
     return response.json();
   },
 
-  async create(data: { filme: number; comentario: string; nota: number }) {
+  async create(data: any) {
+    // Aqui aceitamos "any" para montar o objeto do jeito que o Django quer
     const response = await fetchWithAuth('/api/v1/avaliacoes/', {
       method: 'POST',
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Erro ao criar avaliação');
+    
+    if (!response.ok) {
+      // Tenta ler o erro detalhado que o Django mandou (ex: "Este campo é obrigatório")
+      const errorData = await response.json().catch(() => ({}));
+      console.error("ERRO DETALHADO DO BACKEND:", errorData);
+      
+      // Joga o erro para aparecer na tela
+      throw new Error(JSON.stringify(errorData) || 'Erro ao criar avaliação');
+    }
+    
     return response.json();
   },
 
   async update(id: number, data: { comentario?: string; nota?: number }) {
     const response = await fetchWithAuth(`/api/v1/avaliacoes/${id}/`, {
-      method: 'PUT',
+      method: 'PATCH', 
       body: JSON.stringify(data),
     });
     if (!response.ok) throw new Error('Erro ao atualizar avaliação');
