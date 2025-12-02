@@ -5,3 +5,4 @@ router = SimpleRouter()
 router.register('generos', GeneroViewSet)
 
 urlpatterns = []
+urlpatterns += router.urls

@@ -12,3 +12,8 @@ class AvaliacaoViewSet(viewsets.ModelViewSet):
     queryset = Avaliacao.objects.all()
     serializer_class = AvaliacaoSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+    def perform_create(self, serializer):
+        # Pega o usuário do request (quem está logado) e salva na avaliação
+        serializer.save(usuario=self.request.user)

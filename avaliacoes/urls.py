@@ -5,3 +5,4 @@ router = SimpleRouter()
 router.register('avaliacoes', AvaliacaoViewSet)
 
 urlpatterns = []
+urlpatterns += router.urls
