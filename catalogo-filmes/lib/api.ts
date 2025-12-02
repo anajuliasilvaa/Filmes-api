@@ -313,12 +313,38 @@ export const generosAPI = {
   },
 };
 
+// ==============================================
+// SEÇÃO AJUSTADA COM OS SEUS CRUDS
+// ==============================================
+
 // API de Diretores
 export const diretoresAPI = {
   async list() {
     const response = await fetchWithAuth('/api/v1/diretores/');
     if (!response.ok) throw new Error('Erro ao buscar diretores');
     return response.json();
+  },
+
+  async get(id: number) { 
+    const response = await fetchWithAuth(`/api/v1/diretores/${id}/`);
+    if (!response.ok) throw new Error('Erro ao buscar diretor');
+    return response.json();
+  },
+
+  async update(id: number, data: any) { 
+    const response = await fetchWithAuth(`/api/v1/diretores/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar diretor');
+    return response.json();
+  },
+
+  async delete(id: number) { 
+    const response = await fetchWithAuth(`/api/v1/diretores/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar diretor');
   },
 };
 
@@ -338,6 +364,28 @@ export const favoritosAPI = {
     if (!response.ok) throw new Error('Erro ao criar lista');
     return response.json();
   },
+  
+  async get(listaId: number) { 
+    const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/`);
+    if (!response.ok) throw new Error('Erro ao buscar lista');
+    return response.json();
+  },
+
+  async update(listaId: number, data: { nome?: string }) { 
+    const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar lista');
+    return response.json();
+  },
+
+  async delete(listaId: number) { 
+    const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar lista');
+  },
 
   async addFilme(listaId: number, filmeId: number) {
     const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/filmes/`, {
@@ -348,6 +396,7 @@ export const favoritosAPI = {
     return response.json();
   },
 };
+// ==============================================
 
 export default {
   authAPI,
