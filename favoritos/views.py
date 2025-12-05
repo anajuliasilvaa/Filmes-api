@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
 from .models import ListaFavoritos
-from .serializers import ListaFavoritosSerializer, AdicionarFilmeSerializer
+from .serializers import ListaFavoritosSerializer, ListaFavoritosDetailSerializer, AdicionarFilmeSerializer
 from filmes.models import Filme
 from django.db import IntegrityError
 
@@ -30,9 +30,14 @@ class ListaFavoritosListCreateView(generics.ListCreateAPIView):
 class ListaFavoritosRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """GET/PUT/PATCH/DELETE /api/favoritos/{id}/"""
     queryset = ListaFavoritos.objects.all()
-    serializer_class = ListaFavoritosSerializer
     permission_classes = [IsOwnerOrReadOnly]
     lookup_field = 'id'
+    
+    def get_serializer_class(self):
+        """Usa serializer detalhado para GET, normal para PUT/PATCH"""
+        if self.request.method == 'GET':
+            return ListaFavoritosDetailSerializer
+        return ListaFavoritosSerializer
 
 class AdicionarRemoverFilmeView(generics.GenericAPIView):
     """Endpoint para adicionar ou remover um filme de uma lista específica."""
@@ -40,6 +45,7 @@ class AdicionarRemoverFilmeView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, lista_id):
+        """Adiciona um filme à lista"""
         lista = get_object_or_404(ListaFavoritos, id=lista_id, usuario=request.user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,8 +53,21 @@ class AdicionarRemoverFilmeView(generics.GenericAPIView):
         filme = serializer.validated_data['filme_id']
         
         if filme in lista.filmes.all():
-            lista.filmes.remove(filme)
-            return Response({'detail': f'Filme "{filme.titulo}" removido da lista "{lista.nome}".'}, status=status.HTTP_200_OK)
+            return Response({'detail': f'Filme "{filme.titulo}" já está na lista "{lista.nome}".'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             lista.filmes.add(filme)
             return Response({'detail': f'Filme "{filme.titulo}" adicionado à lista "{lista.nome}".'}, status=status.HTTP_201_CREATED)
+    
+    def delete(self, request, lista_id):
+        """Remove um filme da lista"""
+        lista = get_object_or_404(ListaFavoritos, id=lista_id, usuario=request.user)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        filme = serializer.validated_data['filme_id']
+        
+        if filme not in lista.filmes.all():
+            return Response({'detail': f'Filme "{filme.titulo}" não está na lista "{lista.nome}".'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            lista.filmes.remove(filme)
+            return Response({'detail': f'Filme "{filme.titulo}" removido da lista "{lista.nome}".'}, status=status.HTTP_200_OK)
