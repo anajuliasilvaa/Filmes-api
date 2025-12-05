@@ -96,8 +96,11 @@ export default function EditarListaPage() {
     try {
       setSaving(true);
       
-      // Chamada de PUT/PATCH para atualizar o nome da lista
-      await favoritosAPI.update(id, { nome: nome.trim() });
+      // Chamada de PUT/PATCH para atualizar o nome da lista E os filmes
+      await favoritosAPI.update(id, { 
+        nome: nome.trim(),
+        filmes: filmesSelecionados // Adiciona os IDs dos filmes selecionados
+      });
 
       alert(`Lista "${nome.trim()}" atualizada com sucesso!`);
       router.push(`/favoritos/${id}`);
@@ -213,7 +216,6 @@ export default function EditarListaPage() {
                                                   value={filmesSelecionados.map(String)}
                                                   onChange={handleFilmesChange}
                                                   style={{ minHeight: '200px' }}
-                                                  disabled // Desabilitado para focar na atualização do NOME via API
                                               >
                                                   {filmesDisponiveis.map(filme => (
                                                       <option key={filme.id} value={filme.id}>
@@ -221,10 +223,6 @@ export default function EditarListaPage() {
                                                       </option>
                                                   ))}
                                               </select>
-                                              
-                                              <small className="text-muted d-block mt-2">
-                                                  * **Nota:** A seleção de múltiplos filmes (M2M) é desabilitada neste formulário para focar na atualização do NOME via API.
-                                              </small>
                                           </div>
                                       </div>
                                   </div>
@@ -260,7 +258,7 @@ export default function EditarListaPage() {
                                       </h6>
                                       <ul className="tips-list">
                                           <li>**Nome:** Atualize se quiser um nome mais descritivo</li>
-                                          <li>**Filmes:** Use o botão de remoção na página de detalhes para gerenciar filmes individualmente.</li>
+                                          <li>**Filmes:** Use o campo acima para selecionar ou remover filmes da sua lista.</li>
                                       </ul>
                                   </div>
 

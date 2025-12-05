@@ -392,7 +392,7 @@ export const favoritosAPI = {
     return response.json();
   },
 
-  async update(listaId: number, data: { nome?: string }) { 
+  async update(listaId: number, data: { nome?: string, filmes?: number[] }) { 
     const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/`, {
       method: 'PUT',
       body: JSON.stringify(data),

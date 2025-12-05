@@ -86,7 +86,7 @@ export default function Header() {
                     </Link>
                     <div className="dropdown-menu rounded-0 m-0">
                       <Link href="/perfil" className="dropdown-item">Perfil</Link>
-                      <Link href="/minhas-listas" className="dropdown-item">Minhas Listas</Link>
+                      <Link href="/favoritos" className="dropdown-item">Minhas Listas</Link>
                       <a href="#" onClick={handleLogout} className="dropdown-item">Sair</a>
                     </div>
                   </div>
