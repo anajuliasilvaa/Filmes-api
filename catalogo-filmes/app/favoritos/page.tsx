@@ -121,59 +121,70 @@ export default function FavoritosListPage() {
           <div className="row g-4">
             {listas.map((lista, index) => {
               const filmeCount = lista.filmes.length;
-              const previewFilmes = lista.filmes.slice(0, 3);
-              const filmesRestantes = filmeCount - 3;
+              const previewFilmes = lista.filmes.slice(0, 4);
+              const filmesRestantes = filmeCount - 4;
 
               return (
                 <div key={lista.id} className="col-lg-4 col-md-6">
                   <div className="lista-card">
-
+                    
+                    {/* Header da Lista */}
                     <div className="lista-header">
-                      <div className="lista-icon">
-                        <i className="bi bi-heart-fill text-danger"></i>
+                      <div className="d-flex align-items-center justify-content-between mb-2">
+                        <h4 className="lista-title mb-0">
+                          <i className="bi bi-heart-fill text-danger me-2"></i>
+                          {lista.nome}
+                        </h4>
                       </div>
-                      <div className="lista-count">
-                        <span className="badge bg-primary">{filmeCount}</span>
+                      <div className="lista-meta">
+                        <span className="badge bg-primary">
+                          <i className="bi bi-film me-1"></i>
+                          {filmeCount} {getPluralize(filmeCount, 'filme')}
+                        </span>
+                        <span className="text-muted ms-2">
+                          <i className="bi bi-person-fill me-1"></i>
+                          {lista.usuario}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="lista-body">
-                      <h4 className="lista-title">{lista.nome}</h4>
-
-                      <small className="text-muted">
-                        <i className="bi bi-film me-1"></i>
-                        {filmeCount} {getPluralize(filmeCount, 'filme')}
-                      </small>
-
-                      {filmeCount > 0 && (
-                        <div className="lista-preview">
-                          {previewFilmes.map(filme => (
-                            <div key={filme.id}>
+                    {/* Miniaturas dos Posters */}
+                    <div className="lista-posters">
+                      {filmeCount > 0 ? (
+                        <>
+                          {previewFilmes.map((filme, idx) => (
+                            <div key={`${lista.id}-filme-${filme.id}-${idx}`} className="poster-miniatura">
                               {filme.poster ? (
-                                <img src={filme.poster} className="preview-poster" />
+                                <img src={filme.poster} alt={filme.titulo} className="poster-img" />
                               ) : (
-                                <div className="preview-poster preview-placeholder">
+                                <div className="poster-img poster-placeholder">
                                   <i className="bi bi-film"></i>
                                 </div>
                               )}
                             </div>
                           ))}
-
                           {filmesRestantes > 0 && (
-                            <div className="preview-more">
+                            <div className="poster-miniatura more-badge">
                               +{filmesRestantes}
                             </div>
                           )}
+                        </>
+                      ) : (
+                        <div className="empty-list-message">
+                          <i className="bi bi-inbox me-2"></i>
+                          Nenhum filme adicionado
                         </div>
                       )}
                     </div>
 
-                    <div className="lista-overlay">
-                      <div className="overlay-content">
-                        <Link href={`/favoritos/${lista.id}`} className="btn btn-light btn-lg">
-                          <i className="bi bi-heart me-2"></i>Abrir Lista
-                        </Link>
-                      </div>
+                    {/* Footer com ações */}
+                    <div className="lista-footer">
+                      <Link href={`/favoritos/${lista.id}`} className="btn btn-sm btn-outline-primary">
+                        <i className="bi bi-eye me-1"></i>Ver
+                      </Link>
+                      <Link href={`/favoritos/${lista.id}/editar`} className="btn btn-sm btn-outline-secondary">
+                        <i className="bi bi-pencil me-1"></i>Editar
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -198,36 +209,167 @@ export default function FavoritosListPage() {
       <style jsx global>{`
         .lista-card {
           background: #fff;
-          border-radius: 20px;
+          border-radius: 15px;
           overflow: hidden;
-          position: relative;
-          transition: 0.3s;
-        }
-        .lista-card:hover {
-          transform: translateY(-10px);
-        }
-        .lista-header {
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          padding: 20px;
-          color: white;
-        }
-        .preview-poster {
-          width: 35px;
-          height: 50px;
-          object-fit: cover;
-        }
-        .lista-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(0,0,0,0.45);
-          opacity: 0;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+          height: 100%;
           display: flex;
-          justify-content: center;
-          align-items: center;
-          transition: 0.3s;
+          flex-direction: column;
         }
-        .lista-card:hover .lista-overlay {
-          opacity: 1;
+        
+        .lista-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Header da Lista */
+        .lista-header {
+          padding: 20px;
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          border-bottom: 2px solid #dee2e6;
+        }
+        
+        .lista-title {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #2c3e50;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        
+        .lista-meta {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 0.85rem;
+          margin-top: 8px;
+        }
+        
+        .lista-meta .badge {
+          padding: 5px 10px;
+          border-radius: 12px;
+          font-weight: 500;
+        }
+        
+        /* Miniaturas dos Posters */
+        .lista-posters {
+          padding: 15px;
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          align-items: center;
+          min-height: 100px;
+          background: #fff;
+        }
+        
+        .poster-miniatura {
+          width: 60px;
+          height: 85px;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        
+        .poster-miniatura:hover {
+          transform: scale(1.1);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+          z-index: 5;
+        }
+        
+        .poster-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        
+        .poster-placeholder {
+          background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #6c757d;
+          font-size: 1.5rem;
+        }
+        
+        /* Badge de mais filmes */
+        .more-badge {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 0.9rem;
+          border-radius: 8px;
+        }
+        
+        /* Mensagem de lista vazia */
+        .empty-list-message {
+          color: #6c757d;
+          font-size: 0.9rem;
+          font-style: italic;
+          padding: 10px;
+        }
+        
+        /* Footer com ações */
+        .lista-footer {
+          padding: 15px 20px;
+          background: #f8f9fa;
+          border-top: 1px solid #dee2e6;
+          display: flex;
+          gap: 10px;
+          justify-content: flex-end;
+        }
+        
+        .lista-footer .btn {
+          border-radius: 20px;
+          font-size: 0.85rem;
+          padding: 6px 16px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+        
+        .lista-footer .btn:hover {
+          transform: translateY(-2px);
+        }
+        
+        /* Empty State */
+        .empty-state {
+          padding: 60px 20px;
+        }
+        
+        .section-title {
+          color: #667eea;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+          .lista-title {
+            font-size: 1rem;
+          }
+          
+          .poster-miniatura {
+            width: 50px;
+            height: 70px;
+          }
+          
+          .lista-footer {
+            flex-direction: column;
+          }
+          
+          .lista-footer .btn {
+            width: 100%;
+          }
         }
       `}</style>
     </>

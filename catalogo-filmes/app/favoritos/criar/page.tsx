@@ -4,30 +4,57 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { favoritosAPI } from "@/lib/api";
+import { favoritosAPI, filmesAPI } from "@/lib/api";
+
+interface Filme {
+  id: number;
+  titulo: string;
+  poster: string;
+}
 
 export default function CriarListaPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
   const [nome, setNome] = useState("");
+  const [filmes, setFilmes] = useState<Filme[]>([]);
+  const [filmesSelecionados, setFilmesSelecionados] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingFilmes, setLoadingFilmes] = useState(true);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
+      return;
+    }
+    if (user) {
+      loadFilmes();
     }
   }, [authLoading, user, router]);
 
-  // Impede render antes do auth carregar
-  if (authLoading || !user) return null;
+  const loadFilmes = async () => {
+    try {
+      const data = await filmesAPI.list();
+      setFilmes(data.results || data);
+    } catch (err) {
+      console.error('Erro ao carregar filmes:', err);
+    } finally {
+      setLoadingFilmes(false);
+    }
+  };
+
+  const toggleFilme = (filmeId: number) => {
+    setFilmesSelecionados(prev =>
+      prev.includes(filmeId)
+        ? prev.filter(id => id !== filmeId)
+        : [...prev, filmeId]
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     if (!nome.trim()) {
       setError("O nome da lista é obrigatório.");
@@ -37,11 +64,15 @@ export default function CriarListaPage() {
     try {
       setLoading(true);
       const novaLista = await favoritosAPI.create(nome.trim());
+      
+      // Adicionar filmes selecionados
+      for (const filmeId of filmesSelecionados) {
+        await favoritosAPI.addFilme(novaLista.id, filmeId);
+      }
 
-      setSuccess(`Lista "${novaLista.nome}" criada com sucesso!`);
       router.push(`/favoritos/${novaLista.id}`);
     } catch (err: any) {
-      setError(err.message || "Falha ao criar a lista. Tente novamente.");
+      setError(err.message || "Falha ao criar a lista.");
     } finally {
       setLoading(false);
     }
@@ -109,7 +140,6 @@ export default function CriarListaPage() {
 
                 <div className="card-body p-5">
                   {error && <div className="alert alert-danger text-center">{error}</div>}
-                  {success && <div className="alert alert-success text-center">{success}</div>}
 
                   <form onSubmit={handleSubmit} noValidate>
                     <div className="mb-4">
@@ -139,10 +169,37 @@ export default function CriarListaPage() {
                       </div>
                     </div>
 
-                    {/* Criador */}
-                    <div className="info-box mb-4">
-                      <strong>Criador</strong>
-                      <p className="text-muted mb-0">{user?.username || "Usuário"}</p>
+                    {/* Seleção de Filmes */}
+                    <div className="mb-4">
+                      <label className="form-label fw-bold text-muted">
+                        <i className="bi bi-film me-2"></i>Selecionar Filmes
+                      </label>
+                      
+                      {loadingFilmes ? (
+                        <div className="text-center py-3">
+                          <div className="spinner-border spinner-border-sm"></div>
+                        </div>
+                      ) : (
+                        <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #e9ecef', borderRadius: '10px', padding: '10px' }}>
+                          {filmes.map(filme => (
+                            <div key={filme.id} className="form-check mb-2">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={`filme-${filme.id}`}
+                                checked={filmesSelecionados.includes(filme.id)}
+                                onChange={() => toggleFilme(filme.id)}
+                              />
+                              <label className="form-check-label" htmlFor={`filme-${filme.id}`}>
+                                {filme.titulo}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <small className="text-muted">
+                        {filmesSelecionados.length} filme(s) selecionado(s)
+                      </small>
                     </div>
 
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">

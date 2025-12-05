@@ -75,13 +75,10 @@ export default function FavoritosDetailPage() {
     }
   };
   
-  // Função para remover filme individual (OPCIONAL, mas bom para o UX)
   const handleRemoveFilme = async (filmeId: number) => {
     if (confirm('Deseja realmente remover este filme da lista?')) {
         try {
-            // Reutiliza a função addFilme/removeFilme do backend (POST para a ação)
-            await favoritosAPI.addFilme(id, filmeId); 
-            // Recarrega os dados para atualizar a lista na tela
+            await favoritosAPI.removeFilme(id, filmeId); 
             await loadData();
         } catch (err) {
             setError('Falha ao remover filme.');
@@ -236,7 +233,7 @@ export default function FavoritosDetailPage() {
                                       {filme.ano_publicacao || "Ano não informado"}
                                   </p>
                                   
-                                  {filme.generos && (
+                                  {filme.generos && filme.generos.length > 0 && (
                                       <div className="movie-genres">
                                           {filme.generos.map((genero) => (
                                               <span key={genero.id} className="badge bg-secondary me-1">{genero.nome}</span>

@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        <link rel="icon" type="image/png" href="/img/aba.png" />
+        <link rel="icon" type="image/png" href="/logo.png" />
         
         {/* Bootstrap CSS */}
         <link

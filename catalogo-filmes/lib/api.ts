@@ -416,6 +416,15 @@ export const favoritosAPI = {
     if (!response.ok) throw new Error('Erro ao adicionar filme');
     return response.json();
   },
+
+  async removeFilme(listaId: number, filmeId: number) {
+    const response = await fetchWithAuth(`/api/v1/favoritos/${listaId}/filmes/`, {
+      method: 'DELETE',
+      body: JSON.stringify({ filme_id: filmeId }),
+    });
+    if (!response.ok) throw new Error('Erro ao remover filme');
+    return response.json();
+  },
 };
 // ==============================================
 
