@@ -55,6 +55,32 @@ export default function FilmesPage() {
     }
   };
 
+    const loadDataGenero = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await generosAPI.list();
+      setGeneros(Array.isArray(data) ? data : data.results || []); 
+    } catch (err: any) {
+      console.error(err);
+      setError('Erro ao carregar a lista de gêneros.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleCreate = async () => {
+    const nome = prompt("Digite o nome do novo gênero:");
+    if (!nome) return;
+
+    try {
+      await generosAPI.create(nome);
+      loadDataGenero(); 
+    } catch (err) {
+      alert("Erro ao criar. Verifique se já existe ou se você é Admin.");
+    }
+  };
+
   const getFilmesPorGenero = (generoId: number) => {
     return filmes.filter(filme => 
       filme.generos && filme.generos.some(g => g.id === generoId)
@@ -94,9 +120,9 @@ export default function FilmesPage() {
             <Link href="/filmes/adicionar" className="btn btn-success btn-sm me-2">
               <i className="bi bi-plus-circle me-1"></i>Adicionar Filme
             </Link>
-            <Link href="/generos/adicionar" className="btn btn-info btn-sm me-2">
-              <i className="bi bi-tag me-1"></i>Adicionar Gênero
-            </Link>
+            <button onClick={handleCreate} className="btn btn-success btn-sm me-2">
+               <i className="bi bi-plus-circle me-1"></i>Novo Gênero
+            </button>
             <Link href="/diretores/adicionar" className="btn btn-primary btn-sm">
               <i className="bi bi-person-plus me-1"></i>Adicionar Diretor
             </Link>

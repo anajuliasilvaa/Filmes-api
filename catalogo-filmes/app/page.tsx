@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import { filmesAPI, generosAPI } from '@/lib/api';
+
 
 // --- Interfaces ---
 interface Genero {
@@ -22,8 +24,10 @@ interface Filme {
 // ------------------
 
 export default function HomePage() {
+  const { user, isAdmin } = useAuth();
   const [generos, setGeneros] = useState<Genero[]>([]);
   const [filmes, setFilmes] = useState<Filme[]>([]);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,6 +59,33 @@ export default function HomePage() {
         return id === generoId;
       });
     });
+  };
+
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await generosAPI.list();
+      setGeneros(Array.isArray(data) ? data : data.results || []); 
+    } catch (err: any) {
+      console.error(err);
+      setError('Erro ao carregar a lista de gêneros.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleCreate = async () => {
+    const nome = prompt("Digite o nome do novo gênero:");
+    if (!nome) return;
+
+    try {
+      await generosAPI.create(nome);
+      loadData(); 
+    } catch (err) {
+      alert("Erro ao criar. Verifique se já existe ou se você é Admin.");
+    }
   };
 
   const filmeDestaque = filmes.length > 0 
@@ -124,6 +155,24 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      {/* Admin Controls */}
+      {isAdmin && (
+        <div className="container mt-4 mb-4">
+          <div className="admin-controls text-center">
+            <h6 className="section-title mb-3">Painel Administrativo</h6>
+            <Link href="/filmes/adicionar" className="btn btn-success btn-sm me-2">
+              <i className="bi bi-plus-circle me-1"></i>Adicionar Filme
+            </Link>
+            <button onClick={handleCreate} className="btn btn-success btn-sm me-2">
+               <i className="bi bi-plus-circle me-1"></i>Novo Gênero
+            </button>
+            <Link href="/diretores/adicionar" className="btn btn-primary btn-sm">
+              <i className="bi bi-person-plus me-1"></i>Adicionar Diretor
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* --- CONTEÚDO PRINCIPAL (POR CATEGORIA) --- */}
       <div className="container-fluid p-5 bg-light">
