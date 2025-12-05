@@ -16,8 +16,13 @@ class IsOwnerOrReadOnly(IsAuthenticated):
 
 class ListaFavoritosListCreateView(generics.ListCreateAPIView):
     """GET /api/favoritos/ (Lista) e POST /api/favoritos/ (Cria)"""
-    serializer_class = ListaFavoritosSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        """Usa serializer detalhado para GET, normal para POST"""
+        if self.request.method == 'GET':
+            return ListaFavoritosDetailSerializer
+        return ListaFavoritosSerializer
 
     def get_queryset(self):
         """Retorna apenas as listas do usuário logado."""
