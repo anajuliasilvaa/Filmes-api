@@ -42,6 +42,9 @@ export default function FavoritosListPage() {
     try {
       setLoading(true);
       const listasData = await favoritosAPI.list();
+      
+      console.log('Dados das listas:', listasData);
+      console.log('Primeira lista:', listasData.results?.[0] || listasData[0]);
 
       setListas(listasData.results || listasData);
     } catch (err) {
