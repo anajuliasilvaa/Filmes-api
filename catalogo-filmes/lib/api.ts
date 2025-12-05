@@ -352,11 +352,44 @@ export const diretoresAPI = {
     return response.json();
   },
 
-  async update(id: number, data: any) { 
-    const response = await fetchWithAuth(`/api/v1/diretores/${id}/`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
+  async create(data: any) {
+    const token = getAccessToken();
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Se for FormData, não adicionar Content-Type (o browser faz automaticamente)
+    const isFormData = data instanceof FormData;
+    
+    const response = await fetch(`${API_BASE_URL}/api/v1/diretores/`, {
+      method: 'POST',
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
+    
+    if (!response.ok) throw new Error('Erro ao criar diretor');
+    return response.json();
+  },
+
+  async update(id: number, data: any) { 
+    const token = getAccessToken();
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Se for FormData, não adicionar Content-Type
+    const isFormData = data instanceof FormData;
+    
+    const response = await fetch(`${API_BASE_URL}/api/v1/diretores/${id}/`, {
+      method: 'PUT',
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
+    });
+    
     if (!response.ok) throw new Error('Erro ao atualizar diretor');
     return response.json();
   },
